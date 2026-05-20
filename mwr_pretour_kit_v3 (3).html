@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MWR Pre-Tour Buyer Prep Kit v3</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green: #759A7A;
+  --green-light: #eaf1eb;
+  --green-dark: #4d6e52;
+  --dark: #1C1C1C;
+  --dark2: #252525;
+  --mid: #666;
+  --light: #F1F1F1;
+  --white: #fff;
+  --border: #e2e2e2;
+  --accent: #c8a96e;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+body { font-family: var(--font-body); background: var(--light); color: var(--dark); min-height: 100vh; }
+
+/* HEADER */
+.app-header {
+  background: var(--dark); padding: 0 36px;
+  display: flex; align-items: center; justify-content: space-between;
+  height: 60px; border-bottom: 2px solid var(--green);
+  position: sticky; top: 0; z-index: 100;
+}
+.app-header .brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark { width: 32px; height: 32px; background: var(--green); border-radius: 6px; display: grid; place-items: center; }
+.brand-mark svg { width: 18px; height: 18px; fill: white; }
+.brand-name { font-family: var(--font-display); font-size: 16px; color: white; letter-spacing: 0.01em; }
+.brand-sub { font-size: 11px; color: #777; font-family: var(--font-mono); margin-top: 1px; }
+.team-badge { background: var(--green); color: white; font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; font-family: var(--font-mono); }
+
+/* PROPERTY LIST */
+.property-list { display: grid; gap: 10px; }
+.property-entry {
+  border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--light);
+}
+.property-entry-head {
+  display: flex; align-items: center; gap: 8px; padding: 7px 10px;
+  background: var(--white); border-bottom: 1px solid var(--border);
+}
+.property-entry-num {
+  width: 18px; height: 18px; background: var(--green); border-radius: 50%;
+  color: white; font-size: 10px; font-weight: 700; display: grid; place-items: center;
+  flex-shrink: 0; font-family: var(--font-mono);
+}
+.property-entry-label { font-size: 11px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.07em; flex: 1; }
+.property-remove-btn {
+  width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--border);
+  background: white; display: grid; place-items: center; cursor: pointer; color: #aaa;
+  font-size: 14px; line-height: 1; transition: all 0.15s;
+}
+.property-remove-btn:hover { background: #fee; border-color: #fcc; color: #c0392b; }
+.property-entry-body { padding: 10px; display: grid; gap: 7px; }
+.property-entry-body input,
+.property-entry-body textarea {
+  width: 100%; font-family: var(--font-body); font-size: 12px; color: var(--dark);
+  background: var(--white); border: 1px solid var(--border); border-radius: 6px;
+  padding: 8px 10px; outline: none; transition: border-color 0.15s; appearance: none;
+  resize: vertical;
+}
+.property-entry-body input:focus,
+.property-entry-body textarea:focus { border-color: var(--green); }
+.property-entry-body textarea { height: 64px; }
+.property-source-toggle {
+  display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden;
+  margin-bottom: 2px;
+}
+.property-source-toggle button {
+  flex: 1; padding: 6px 4px; font-family: var(--font-body); font-size: 11px; font-weight: 500;
+  background: var(--white); border: none; border-right: 1px solid var(--border); cursor: pointer;
+  color: var(--mid); transition: all 0.15s;
+}
+.property-source-toggle button:last-child { border-right: none; }
+.property-source-toggle button.active { background: var(--dark); color: white; }
+.property-add-btn {
+  display: flex; align-items: center; gap: 7px; width: 100%;
+  padding: 9px 12px; border-radius: 8px; border: 1px dashed var(--border);
+  background: transparent; font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  color: var(--mid); cursor: pointer; transition: all 0.15s; margin-top: 2px;
+}
+.property-add-btn:hover { border-color: var(--green); color: var(--green-dark); background: var(--green-light); }
+.property-add-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; flex-shrink: 0; }
+.property-wishlist-note { font-size: 11px; color: var(--mid); margin-top: -4px; margin-bottom: 8px; font-style: italic; line-height: 1.5; }
+
+/* LAYOUT */
+.layout { display: grid; grid-template-columns: 380px 1fr; gap: 0; min-height: calc(100vh - 60px); }
+
+/* FORM PANEL */
+.form-panel {
+  background: var(--white); border-right: 1px solid var(--border);
+  padding: 28px 24px; overflow-y: auto;
+  height: calc(100vh - 60px); position: sticky; top: 60px;
+}
+.form-panel h2 { font-family: var(--font-display); font-size: 20px; color: var(--dark); margin-bottom: 4px; }
+.form-panel .form-sub { font-size: 12px; color: var(--mid); margin-bottom: 24px; line-height: 1.5; }
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px; }
+.field input, .field select, .field textarea {
+  width: 100%; font-family: var(--font-body); font-size: 13px; color: var(--dark);
+  background: var(--light); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 12px; outline: none; transition: border-color 0.15s, background 0.15s; appearance: none;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--green); background: var(--white); }
+.field textarea { height: 72px; resize: vertical; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer;
+}
+.parcel-note { font-size: 11px; color: var(--mid); margin-top: 4px; font-style: italic; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* Toggle field */
+.toggle-field { margin-bottom: 16px; }
+.toggle-field label { display: block; font-size: 11px; font-weight: 600; color: var(--mid); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.toggle-group { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.toggle-group button {
+  flex: 1; padding: 9px 6px; font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  background: var(--light); border: none; border-right: 1px solid var(--border); cursor: pointer;
+  color: var(--mid); transition: all 0.15s; line-height: 1.3; text-align: center;
+}
+.toggle-group button:last-child { border-right: none; }
+.toggle-group button.active { background: var(--dark); color: white; }
+.toggle-group button.active.green { background: var(--green); }
+.toggle-group button.active.amber { background: #d97706; }
+.toggle-group button.active.red { background: #dc2626; }
+
+.section-label {
+  font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--green-dark); margin: 20px 0 12px; display: flex; align-items: center; gap: 6px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--green-light); }
+
+.generate-btn {
+  width: 100%; background: var(--dark); color: white; border: none;
+  padding: 14px; border-radius: 10px; font-family: var(--font-body); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s, transform 0.1s;
+  display: flex; align-items: center; justify-content: center; gap: 8px; letter-spacing: 0.01em;
+}
+.generate-btn:hover { background: var(--dark2); }
+.generate-btn:active { transform: scale(0.98); }
+.generate-btn:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+.generate-btn .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+.generate-btn.loading .spinner { display: block; }
+.generate-btn.loading .btn-text { opacity: 0.7; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.reset-link { display: block; text-align: center; margin-top: 12px; font-size: 12px; color: var(--mid); cursor: pointer; text-decoration: underline; }
+.reset-link:hover { color: var(--dark); }
+
+/* OUTPUT PANEL */
+.output-panel { padding: 32px 36px; overflow-y: auto; }
+
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; min-height: 400px; text-align: center; color: var(--mid); }
+.empty-icon { width: 64px; height: 64px; background: var(--white); border-radius: 16px; border: 1px solid var(--border); display: grid; place-items: center; margin-bottom: 16px; }
+.empty-icon svg { width: 30px; height: 30px; stroke: var(--green); fill: none; stroke-width: 1.5; }
+.empty-state h3 { font-family: var(--font-display); font-size: 20px; color: var(--dark); margin-bottom: 6px; }
+.empty-state p { font-size: 13px; line-height: 1.6; max-width: 320px; }
+
+/* BRIEF */
+.brief { display: none; max-width: 840px; }
+.brief.visible { display: block; }
+.brief-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.brief-topbar h2 { font-family: var(--font-display); font-size: 22px; color: var(--dark); }
+.brief-actions { display: flex; gap: 8px; }
+.action-btn { font-family: var(--font-body); font-size: 12px; font-weight: 500; padding: 7px 14px; border-radius: 7px; cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--dark); transition: all 0.15s; }
+.action-btn:hover { background: var(--light); }
+.action-btn.primary { background: var(--green); color: white; border-color: var(--green); }
+.action-btn.primary:hover { background: var(--green-dark); }
+
+.brief-card { background: var(--white); border-radius: 14px; border: 1px solid var(--border); overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+
+/* HERO */
+.brief-hero { background: var(--dark); padding: 28px 32px; position: relative; overflow: hidden; }
+.brief-hero::before { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 6px; background: var(--green); }
+.brief-hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; }
+.brief-buyer-name { font-family: var(--font-display); font-size: 28px; color: var(--white); line-height: 1.1; }
+.brief-meta-chips { display: flex; gap: 7px; flex-wrap: wrap; margin-top: 8px; }
+.meta-chip { font-size: 11px; font-family: var(--font-mono); padding: 3px 10px; border-radius: 20px; background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.12); }
+.meta-chip.highlight { background: var(--green); color: white; border-color: var(--green); }
+.brief-tour-info { display: flex; gap: 20px; flex-wrap: wrap; }
+.tour-stat-label { font-size: 10px; color: rgba(255,255,255,0.45); font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; }
+.tour-stat-value { font-size: 13px; color: rgba(255,255,255,0.85); font-weight: 500; margin-top: 2px; }
+
+/* READINESS BADGE */
+.readiness-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  font-family: var(--font-mono); letter-spacing: 0.03em; cursor: default;
+  position: relative;
+}
+.readiness-badge.cold { background: rgba(156,163,175,0.2); color: #9ca3af; border: 1px solid rgba(156,163,175,0.3); }
+.readiness-badge.warm { background: rgba(234,179,8,0.18); color: #eab308; border: 1px solid rgba(234,179,8,0.3); }
+.readiness-badge.hot { background: rgba(249,115,22,0.18); color: #f97316; border: 1px solid rgba(249,115,22,0.3); }
+.readiness-badge.veryhot { background: rgba(34,197,94,0.18); color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+.readiness-badge .badge-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.readiness-badge.cold .badge-dot { background: #9ca3af; }
+.readiness-badge.warm .badge-dot { background: #eab308; animation: pulse 1.4s ease-in-out infinite; }
+.readiness-badge.hot .badge-dot { background: #f97316; animation: pulse 1s ease-in-out infinite; }
+.readiness-badge.veryhot .badge-dot { background: #22c55e; animation: pulse 0.8s ease-in-out infinite; }
+.badge-tooltip {
+  display: none; position: absolute; top: calc(100% + 8px); right: 0;
+  background: var(--dark2); color: white; font-size: 11px; font-family: var(--font-body);
+  font-weight: 400; padding: 8px 12px; border-radius: 7px; width: 220px;
+  line-height: 1.5; z-index: 10; pointer-events: none; letter-spacing: 0;
+}
+.badge-tooltip::before { content: ''; position: absolute; top: -5px; right: 16px; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 5px solid var(--dark2); }
+.readiness-badge:hover .badge-tooltip { display: block; }
+
+/* SPANISH TOGGLE */
+.lang-toggle-bar {
+  display: none; background: #fffbeb; border-bottom: 1px solid #fde68a;
+  padding: 10px 16px; align-items: center; gap: 12px;
+}
+.lang-toggle-bar.visible { display: flex; }
+.lang-toggle-bar span { font-size: 12px; color: #92400e; font-weight: 500; }
+.lang-toggle-btns { display: flex; border: 1px solid #fde68a; border-radius: 6px; overflow: hidden; }
+.lang-toggle-btns button { padding: 5px 14px; font-size: 12px; font-family: var(--font-body); font-weight: 500; background: transparent; border: none; cursor: pointer; color: #92400e; transition: all 0.15s; }
+.lang-toggle-btns button.active { background: #92400e; color: white; }
+
+/* SECTION BLOCKS */
+.brief-body { padding: 28px 32px; display: grid; gap: 24px; }
+.section-block { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.section-head { background: var(--light); padding: 10px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); }
+.section-head .section-icon { width: 24px; height: 24px; background: var(--green-light); border-radius: 5px; display: grid; place-items: center; flex-shrink: 0; }
+.section-icon svg { width: 13px; height: 13px; stroke: var(--green-dark); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.section-head h3 { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid); flex: 1; }
+.section-body { padding: 16px; }
+
+/* Regenerate button in section head */
+.regen-btn {
+  width: 24px; height: 24px; border-radius: 5px; border: 1px solid var(--border);
+  background: var(--white); display: grid; place-items: center; cursor: pointer;
+  transition: all 0.15s; flex-shrink: 0;
+}
+.regen-btn:hover { background: var(--green-light); border-color: var(--green); }
+.regen-btn svg { width: 11px; height: 11px; stroke: var(--mid); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.regen-btn:hover svg { stroke: var(--green-dark); }
+.regen-btn.spinning svg { animation: spin 0.7s linear infinite; }
+
+/* FINANCING */
+.financing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 12px; }
+.fin-cell { background: var(--light); border-radius: 8px; padding: 12px 14px; text-align: center; }
+.fin-cell-label { font-size: 10px; color: var(--mid); text-transform: uppercase; letter-spacing: 0.07em; font-family: var(--font-mono); margin-bottom: 4px; }
+.fin-cell-val { font-size: 18px; font-weight: 600; color: var(--dark); font-family: var(--font-mono); }
+.fin-cell-sub { font-size: 10px; color: var(--mid); margin-top: 2px; }
+.fin-cell.accent { background: var(--green-light); }
+.fin-cell.accent .fin-cell-val { color: var(--green-dark); }
+.fin-note { font-size: 12px; color: var(--mid); background: var(--light); border-radius: 6px; padding: 8px 12px; line-height: 1.5; }
+
+/* AI CONTENT */
+.ai-content { font-size: 13px; line-height: 1.7; color: var(--dark); }
+.ai-content p { margin-bottom: 10px; }
+.ai-content p:last-child { margin-bottom: 0; }
+.ai-content ul, .ai-content ol { margin: 0 0 10px 18px; }
+.ai-content li { margin-bottom: 5px; }
+.ai-content strong { font-weight: 600; }
+
+/* OBJECTIONS */
+.objection-list { display: grid; gap: 10px; }
+.objection-item { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.objection-head { background: #fff8f0; padding: 8px 14px; font-size: 12px; font-weight: 600; color: #8a4a00; border-bottom: 1px solid #fde8cc; display: flex; align-items: center; gap: 7px; }
+.obj-num { width: 18px; height: 18px; background: #f0a050; border-radius: 50%; color: white; font-size: 10px; font-weight: 700; display: grid; place-items: center; flex-shrink: 0; font-family: var(--font-mono); }
+.objection-body { padding: 10px 14px; }
+.objection-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.07em; color: var(--mid); margin-bottom: 4px; font-family: var(--font-mono); }
+.objection-text { font-size: 13px; color: var(--dark); line-height: 1.6; }
+.response-block { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border); }
+.response-block .objection-label { color: var(--green-dark); }
+
+/* TALKING POINTS */
+.talking-points { display: grid; gap: 8px; }
+.tp-item { display: flex; gap: 10px; align-items: flex-start; background: var(--light); border-radius: 7px; padding: 10px 12px; }
+.tp-bullet { width: 20px; height: 20px; background: var(--green); border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; margin-top: 1px; }
+.tp-bullet svg { width: 10px; height: 10px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; }
+.tp-text { font-size: 13px; color: var(--dark); line-height: 1.6; flex: 1; }
+.tp-copy {
+  width: 26px; height: 26px; border-radius: 5px; border: 1px solid var(--border);
+  background: white; display: grid; place-items: center; cursor: pointer;
+  flex-shrink: 0; transition: all 0.15s; margin-top: 1px;
+}
+.tp-copy:hover { background: var(--green-light); border-color: var(--green); }
+.tp-copy svg { width: 12px; height: 12px; stroke: var(--mid); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tp-copy:hover svg { stroke: var(--green-dark); }
+.tp-copy.copied { background: var(--green); border-color: var(--green); }
+.tp-copy.copied svg { stroke: white; }
+
+/* WATER RIGHTS */
+.water-badge { display: inline-flex; align-items: center; gap: 6px; background: #e8f4fb; color: #1a5f8a; border: 1px solid #b8d8ef; border-radius: 6px; padding: 5px 12px; font-size: 12px; font-weight: 500; margin-bottom: 10px; }
+.water-badge svg { width: 13px; height: 13px; stroke: #1a6fa0; fill: none; stroke-width: 2; }
+
+/* SKELETON */
+.skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; border-radius: 6px; height: 14px; margin-bottom: 8px; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.stream-indicator { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--green-dark); font-family: var(--font-mono); margin-bottom: 16px; }
+.stream-dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 1s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+/* BRIEF FOOTER */
+.brief-footer {
+  padding: 16px 32px; border-top: 1px solid var(--border); background: var(--light);
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.brief-footer-info { font-size: 11px; color: var(--mid); font-family: var(--font-mono); }
+.brief-footer-info strong { color: var(--dark); }
+.prepared-by-wrap { display: flex; align-items: center; gap: 8px; }
+.prepared-by-wrap label { font-size: 11px; color: var(--mid); font-family: var(--font-mono); white-space: nowrap; }
+.prepared-by-select {
+  font-family: var(--font-mono); font-size: 11px; color: var(--dark);
+  border: 1px solid var(--border); background: white; border-radius: 5px;
+  padding: 4px 24px 4px 8px; appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 7px center;
+}
+
+/* Availability badge */
+.availability-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px; font-size: 10px; font-family: var(--font-mono); font-weight: 600;
+}
+.availability-chip.available { background: rgba(117,154,122,0.15); color: var(--green-dark); border: 1px solid rgba(117,154,122,0.3); }
+.availability-chip.under-contract { background: rgba(234,179,8,0.15); color: #92400e; border: 1px solid rgba(234,179,8,0.3); }
+.availability-chip.last-one { background: rgba(220,38,38,0.12); color: #dc2626; border: 1px solid rgba(220,38,38,0.3); }
+.availability-chip .avail-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.availability-chip.available .avail-dot { background: var(--green); }
+.availability-chip.under-contract .avail-dot { background: #eab308; }
+.availability-chip.last-one .avail-dot { background: #dc2626; animation: pulse 0.8s ease-in-out infinite; }
+
+/* PRINT */
+@media print {
+  .app-header, .form-panel, .brief-topbar, .brief-actions, .tp-copy, .regen-btn { display: none !important; }
+  .layout { display: block; }
+  .output-panel { padding: 0; }
+  .brief { display: block !important; }
+  .brief-card { box-shadow: none; border: 1px solid #ccc; }
+  body { background: white; }
+  .brief-footer { display: flex !important; }
+}
+
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  .form-panel { height: auto; position: static; border-right: none; border-bottom: 1px solid var(--border); }
+  .output-panel { padding: 20px 16px; }
+  .financing-grid { grid-template-columns: 1fr 1fr; }
+  .brief-hero { padding: 20px; }
+  .brief-body { padding: 20px; }
+  .brief-footer { padding: 16px 20px; }
+  .app-header { padding: 0 16px; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">Mountains West Ranches</div>
+      <div class="brand-sub">Pre-Tour Buyer Prep Kit</div>
+    </div>
+  </div>
+  <span class="team-badge">Land Specialists</span>
+</header>
+
+<div class="layout">
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <h2>Buyer Details</h2>
+    <p class="form-sub">Fill in what you know before the tour. The land specialist gets a personalized brief with financing, objections, and talking points.</p>
+
+    <div class="field">
+      <label>Buyer Name</label>
+      <input type="text" id="f-name" placeholder="e.g. Marcus Rivera">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Lead Source</label>
+        <select id="f-source">
+          <option value="Facebook">Facebook / Meta</option>
+          <option value="Google">Google Ads</option>
+          <option value="LandWatch">LandWatch</option>
+          <option value="Referral">Referral</option>
+          <option value="TikTok">TikTok</option>
+          <option value="Walk-in">Walk-in</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Language Track</label>
+        <select id="f-lang" onchange="handleLangChange()">
+          <option value="English">English (MWR)</option>
+          <option value="Spanish">Spanish (Terrenos)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Buyer Type / Persona</label>
+      <select id="f-persona">
+        <option value="Unknown">Unknown / Not sure yet</option>
+        <option value="Dave">Dave -- Self-sufficient homesteader</option>
+        <option value="Jim">Jim -- Retirement / Investment buyer</option>
+        <option value="Ryan">Ryan -- Hunter / Recreation buyer</option>
+        <option value="Sarah">Sarah -- Remote work / Off-grid lifestyle</option>
+        <option value="Frank">Frank -- Spanish-speaking buyer</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Properties of Interest</label>
+      <p class="property-wishlist-note">Add specific parcels below, or describe what the buyer is looking for and let the specialist fill in the best fits.</p>
+      <div class="property-list" id="property-list"></div>
+      <button class="property-add-btn" onclick="addProperty()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add another property
+      </button>
+    </div>
+
+    <div class="toggle-field">
+      <label>Parcel Availability</label>
+      <div class="toggle-group" id="tg-availability">
+        <button class="active green" onclick="setToggle('tg-availability', this, 'Available')">Available</button>
+        <button onclick="setToggle('tg-availability', this, 'Under Contract')">Under Contract</button>
+        <button onclick="setToggle('tg-availability', this, 'Last One in Subdivision')" style="font-size:11px;">Last One</button>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>Estimated Down Payment</label>
+        <input type="number" id="f-down" placeholder="e.g. 3000" min="1000" oninput="updateReadiness()">
+      </div>
+      <div class="field">
+        <label>Preferred Term</label>
+        <select id="f-term">
+          <option value="both">Show Both (10 &amp; 15 yr)</option>
+          <option value="10">10 Years</option>
+          <option value="15">15 Years</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="toggle-field">
+        <label>Tour Type</label>
+        <div class="toggle-group" id="tg-tourtype">
+          <button class="active" onclick="setToggle('tg-tourtype', this, 'In-Person')">In-Person</button>
+          <button onclick="setToggle('tg-tourtype', this, 'Virtual')">Virtual</button>
+          <button onclick="setToggle('tg-tourtype', this, 'Self-Guided')">Self</button>
+        </div>
+      </div>
+      <div class="toggle-field">
+        <label>Who's Attending</label>
+        <div class="toggle-group" id="tg-attending">
+          <button class="active" onclick="setToggle('tg-attending', this, 'Buyer only')">Solo</button>
+          <button onclick="setToggle('tg-attending', this, 'Buyer + spouse')">+ Spouse</button>
+          <button onclick="setToggle('tg-attending', this, 'Buyer + family')">Family</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Notes on buyer (optional)</label>
+      <textarea id="f-notes" placeholder="e.g. Has land already, wants more acreage. Mentioned farming. Spouse very involved in decision."></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <button class="generate-btn" id="generate-btn" onclick="generateBrief()">
+      <div class="spinner"></div>
+      <span class="btn-text">Generate Prep Kit</span>
+    </button>
+    <span class="reset-link" onclick="resetForm()">Clear form</span>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel" id="output-panel">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <h3>Ready when you are</h3>
+      <p>Fill in the buyer details and click Generate. The land specialist gets a fully personalized one-page brief in seconds.</p>
+    </div>
+
+    <div class="brief" id="brief-output">
+      <div class="brief-topbar">
+        <h2 id="brief-title">Buyer Prep Kit</h2>
+        <div class="brief-actions">
+          <button class="action-btn" onclick="window.print()">Print / Save PDF</button>
+          <button class="action-btn primary" onclick="generateBrief()">Regenerate All</button>
+        </div>
+      </div>
+
+      <div class="brief-card">
+
+        <!-- Spanish toggle bar (hidden unless Spanish track) -->
+        <div class="lang-toggle-bar" id="lang-toggle-bar">
+          <span>Bilingual brief ready:</span>
+          <div class="lang-toggle-btns">
+            <button class="active" id="lang-btn-en" onclick="switchLang('en')">English</button>
+            <button id="lang-btn-es" onclick="switchLang('es')">Espanol</button>
+          </div>
+        </div>
+
+        <!-- Hero -->
+        <div class="brief-hero">
+          <div class="brief-hero-top">
+            <div>
+              <div class="brief-buyer-name" id="out-name"></div>
+              <div class="brief-meta-chips" id="out-chips"></div>
+            </div>
+            <div id="readiness-badge-wrap"></div>
+          </div>
+          <div class="brief-tour-info" id="out-tour-info"></div>
+        </div>
+
+        <!-- Body -->
+        <div class="brief-body">
+
+          <!-- Financing -->
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+              <h3>Financing Breakdown</h3>
+            </div>
+            <div class="section-body" id="out-financing"></div>
+          </div>
+
+          <!-- Parcel facts -->
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+              <h3>Parcel Overview</h3>
+              <button class="regen-btn" title="Regenerate this section" onclick="regenSection('parcel')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-parcel"></div>
+          </div>
+
+          <!-- Water rights -->
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
+              <h3>Water Rights Note</h3>
+              <button class="regen-btn" title="Regenerate this section" onclick="regenSection('water')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-water"></div>
+          </div>
+
+          <!-- Objections -->
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <h3>Likely Objections</h3>
+              <button class="regen-btn" title="Regenerate this section" onclick="regenSection('objections')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-objections"></div>
+          </div>
+
+          <!-- Talking points -->
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+              <h3>Talking Points for the Land Specialist</h3>
+              <button class="regen-btn" title="Regenerate this section" onclick="regenSection('talking')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-talking"></div>
+          </div>
+
+        </div><!-- /brief-body -->
+
+        <!-- Brief footer -->
+        <div class="brief-footer">
+          <div class="brief-footer-info" id="brief-generated-at"></div>
+          <div class="prepared-by-wrap">
+            <label for="prepared-by-select">Prepared by:</label>
+            <select id="prepared-by-select" class="prepared-by-select">
+              <option value="Kelly">Kelly</option>
+              <option value="Shay">Shay</option>
+              <option value="Silvia">Silvia</option>
+            </select>
+          </div>
+        </div>
+
+      </div><!-- /brief-card -->
+    </div><!-- /brief -->
+  </div><!-- /output-panel -->
+</div><!-- /layout -->
+
+<script>
+// ---- STATE ----
+const INTEREST_RATE = 0.099;
+let lastParsed = null;
+let currentLang = 'en';
+let propertyCount = 0;
+
+const toggleState = {
+  'tg-availability': 'Available',
+  'tg-tourtype': 'In-Person',
+  'tg-attending': 'Buyer only'
+};
+
+// ---- PROPERTY LIST ----
+function addProperty() {
+  propertyCount++;
+  const id = `prop-${propertyCount}`;
+  const list = document.getElementById('property-list');
+  const entry = document.createElement('div');
+  entry.className = 'property-entry';
+  entry.id = id;
+  const idx = list.children.length + 1;
+  entry.innerHTML = `
+    <div class="property-entry-head">
+      <div class="property-entry-num">${idx}</div>
+      <div class="property-entry-label">Property ${idx}</div>
+      ${idx > 1 ? `<button class="property-remove-btn" onclick="removeProperty('${id}')" title="Remove">&times;</button>` : ''}
+    </div>
+    <div class="property-entry-body">
+      <div class="property-source-toggle" id="src-toggle-${id}">
+        <button class="active" onclick="setPropSource('${id}', 'details', this)">Enter details</button>
+        <button onclick="setPropSource('${id}', 'url', this)">Paste URL</button>
+        <button onclick="setPropSource('${id}', 'description', this)">Paste description</button>
+      </div>
+      <input type="text" id="${id}-name" placeholder="Property name or lot number (e.g. Lot 14, Buck Horn Mesa)" />
+      <div id="${id}-details-fields">
+        <input type="text" id="${id}-details" placeholder="Acreage, price, features (e.g. 5 acres, $42,000, water access)" />
+      </div>
+      <div id="${id}-url-fields" style="display:none">
+        <input type="url" id="${id}-url" placeholder="https://www.landwatch.com/..." />
+      </div>
+      <div id="${id}-description-fields" style="display:none">
+        <textarea id="${id}-desc" placeholder="Paste the full property description here..."></textarea>
+      </div>
+    </div>`;
+  list.appendChild(entry);
+  renumberProperties();
+}
+
+function removeProperty(id) {
+  document.getElementById(id)?.remove();
+  renumberProperties();
+}
+
+function renumberProperties() {
+  const entries = document.querySelectorAll('#property-list .property-entry');
+  entries.forEach((entry, i) => {
+    const num = entry.querySelector('.property-entry-num');
+    const lbl = entry.querySelector('.property-entry-label');
+    const rmBtn = entry.querySelector('.property-remove-btn');
+    if (num) num.textContent = i + 1;
+    if (lbl) lbl.textContent = `Property ${i + 1}`;
+    if (i === 0 && rmBtn) rmBtn.remove();
+  });
+}
+
+function setPropSource(id, mode, btn) {
+  const toggle = document.getElementById(`src-toggle-${id}`);
+  toggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(`${id}-details-fields`).style.display = mode === 'details' ? '' : 'none';
+  document.getElementById(`${id}-url-fields`).style.display = mode === 'url' ? '' : 'none';
+  document.getElementById(`${id}-description-fields`).style.display = mode === 'description' ? '' : 'none';
+}
+
+function collectProperties() {
+  const entries = document.querySelectorAll('#property-list .property-entry');
+  const results = [];
+  entries.forEach((entry, i) => {
+    const pid = entry.id;
+    const name = document.getElementById(`${pid}-name`)?.value.trim() || '';
+    const activeMode = entry.querySelector('.property-source-toggle .active')?.textContent.trim();
+    let content = '';
+    if (activeMode === 'Enter details') content = document.getElementById(`${pid}-details`)?.value.trim() || '';
+    else if (activeMode === 'Paste URL') content = document.getElementById(`${pid}-url`)?.value.trim() || '';
+    else if (activeMode === 'Paste description') content = document.getElementById(`${pid}-desc`)?.value.trim() || '';
+
+    if (name || content) {
+      results.push({ num: i + 1, name: name || `Property ${i+1}`, mode: activeMode, content });
+    }
+  });
+  return results;
+}
+
+function formatPropertiesForPrompt(properties) {
+  if (!properties.length) return 'No specific properties listed -- use buyer wishlist/notes to recommend best fits.';
+  return properties.map(p => {
+    const modeLabel = p.mode === 'Paste URL' ? 'URL' : p.mode === 'Paste description' ? 'Description' : 'Details';
+    return `Property ${p.num}: ${p.name}\n  [${modeLabel}]: ${p.content || 'No additional info provided'}`;
+  }).join('\n\n');
+}
+
+function formatPropertiesForHero(properties) {
+  if (!properties.length) return 'Not specified';
+  return properties.map(p => p.name).filter(Boolean).join(', ') || 'To be matched';
+}
+
+// ---- TOGGLES ----
+function setToggle(groupId, btn, value) {
+  toggleState[groupId] = value;
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('button').forEach(b => {
+    b.classList.remove('active', 'green', 'amber', 'red');
+  });
+  btn.classList.add('active');
+  if (groupId === 'tg-availability') {
+    if (value === 'Available') btn.classList.add('green');
+    else if (value === 'Under Contract') btn.classList.add('amber');
+    else btn.classList.add('red');
+  }
+  updateReadiness();
+}
+
+function handleLangChange() {
+  const bar = document.getElementById('lang-toggle-bar');
+  if (document.getElementById('f-lang').value !== 'Spanish') {
+    bar.classList.remove('visible');
+  }
+}
+
+// ---- READINESS SCORE ----
+function computeReadiness() {
+  const source = document.getElementById('f-source').value;
+  const down = parseFloat(document.getElementById('f-down').value) || 0;
+  const properties = collectProperties();
+  let price = null;
+  properties.forEach(p => { const m = p.content?.match(/[\$]?([\d,]+)/); if (m && !price) price = parseFloat(m[1].replace(/,/g,'')); });
+  const pct = price ? (down / price) : 0;
+  const highIntent = ['Referral', 'LandWatch'].includes(source);
+  const midIntent = ['Facebook', 'Google', 'TikTok'].includes(source);
+  if (pct >= 0.1 && highIntent) return 'veryhot';
+  if (pct >= 0.1 && midIntent) return 'hot';
+  if (pct >= 0.05 || highIntent) return 'warm';
+  return 'cold';
+}
+
+const readinessLabels = { cold: 'Cold', warm: 'Warm', hot: 'Hot', veryhot: 'Very Hot' };
+const readinessTips = {
+  cold: 'Low down and lower-intent source. Focus on building value and financing ease.',
+  warm: 'Moderate signals. Lead with the monthly payment story and owner financing simplicity.',
+  hot: 'Strong down or high-intent source. Move toward urgency and close.',
+  veryhot: 'High down + high-intent source. This buyer is ready. Prioritize decision-making support.'
+};
+
+function updateReadiness() {
+  if (!document.getElementById('brief-output').classList.contains('visible')) return;
+  renderReadinessBadge();
+}
+
+function renderReadinessBadge() {
+  const score = computeReadiness();
+  const wrap = document.getElementById('readiness-badge-wrap');
+  wrap.innerHTML = `
+    <div class="readiness-badge ${score}">
+      <div class="badge-dot"></div>
+      Buyer Readiness: ${readinessLabels[score]}
+      <div class="badge-tooltip">${readinessTips[score]}</div>
+    </div>`;
+}
+
+// ---- FINANCING ----
+function calcMonthly(principal, downPayment, years) {
+  const p = principal - downPayment;
+  if (p <= 0) return 0;
+  const r = INTEREST_RATE / 12;
+  const n = years * 12;
+  return p * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+}
+function fmt(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtInt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+function buildFinancing(price, down, termPref) {
+  if (!price || !down) return null;
+  const remaining = price - down;
+  const terms = termPref === 'both' ? [10, 15] : [parseInt(termPref)];
+  let html = '<div class="financing-grid">';
+  html += `<div class="fin-cell"><div class="fin-cell-label">Purchase Price</div><div class="fin-cell-val">${fmtInt(price)}</div></div>`;
+  html += `<div class="fin-cell"><div class="fin-cell-label">Down Payment</div><div class="fin-cell-val">${fmtInt(down)}</div></div>`;
+  html += `<div class="fin-cell"><div class="fin-cell-label">Amount Financed</div><div class="fin-cell-val">${fmtInt(remaining)}</div></div>`;
+  html += '</div><div class="financing-grid">';
+  terms.forEach(yr => {
+    const monthly = calcMonthly(price, down, yr);
+    const total = down + monthly * yr * 12;
+    html += `<div class="fin-cell accent"><div class="fin-cell-label">${yr}-Year Term</div><div class="fin-cell-val">${fmt(monthly)}/mo</div><div class="fin-cell-sub">Total paid: ${fmtInt(total)}</div></div>`;
+  });
+  if (terms.length === 1) html += '<div class="fin-cell"></div>';
+  html += '</div>';
+  html += `<div class="fin-note">No credit check required. $1,000 minimum down. Owner financing through MWR. ${down >= 1000 ? "Buyer's down payment qualifies." : "Minimum $1,000 down required."}</div>`;
+  return html;
+}
+
+function parsePrice(str) {
+  const m = str?.match(/[\$]?([\d,]+)/);
+  return m ? parseFloat(m[1].replace(/,/g,'')) : null;
+}
+
+// ---- PROMPT BUILDER ----
+function buildPrompt(sectionOverride) {
+  const name = document.getElementById('f-name').value.trim();
+  const source = document.getElementById('f-source').value;
+  const lang = document.getElementById('f-lang').value;
+  const down = parseFloat(document.getElementById('f-down').value) || 0;
+  const notes = document.getElementById('f-notes').value.trim();
+  const persona = document.getElementById('f-persona').value;
+  const availability = toggleState['tg-availability'];
+  const tourType = toggleState['tg-tourtype'];
+  const attending = toggleState['tg-attending'];
+  const isSpanish = lang === 'Spanish';
+  const itin = isSpanish ? 'ITIN accepted (no SSN required). ' : '';
+  const properties = collectProperties();
+  const propertyBlock = formatPropertiesForPrompt(properties);
+
+  const personaContext = {
+    'Dave': 'Dave is a self-sufficient homesteader. He cares about acreage utility, water access, fencing, zoning flexibility, and long-term self-reliance. He may object to anything that feels like HOA control or government restriction. Lead with what he can DO on the land.',
+    'Jim': 'Jim is a retirement or investment buyer. He cares about asset appreciation, low-hassle ownership, and whether this land holds or grows in value. He may compare to 401k or other investments. Lead with land as a tangible, appreciating asset.',
+    'Ryan': 'Ryan is a hunter or recreation buyer. He cares about hunting, ATV access, wildlife, proximity to public land, and seasonality. He may already own land elsewhere. Lead with recreational access and lifestyle, not agriculture.',
+    'Sarah': 'Sarah is a remote-work or off-grid lifestyle buyer. She cares about internet access (or Starlink feasibility), building a cabin or tiny home, solar viability, and escaping suburban life. She may bring a partner. Lead with vision and possibility.',
+    'Frank': 'Frank is a Spanish-speaking buyer. He cares about being understood and respected. He may be unfamiliar with land buying in Utah, and ITIN financing is a key differentiator. Lead with trust, simplicity, and community connection.',
+    'Unknown': 'Buyer persona is unknown. Use context clues from the lead source and notes to infer motivations.'
+  };
+
+  const availabilityContext = availability === 'Available'
+    ? 'The parcel is currently available.'
+    : availability === 'Under Contract'
+    ? 'This parcel is currently under contract. Talking points should acknowledge this and focus on comparable available parcels or getting on a waitlist.'
+    : 'This is the last available parcel in this subdivision. Use appropriate urgency and scarcity language in talking points.';
+
+  const tourContext = tourType === 'Virtual'
+    ? 'This is a virtual tour. The land specialist should pace the conversation differently, rely more on descriptions and data, and build rapport remotely.'
+    : tourType === 'Self-Guided'
+    ? 'This is a self-guided tour. The land specialist will not be present on-site. Talking points should be formatted for a printed or texted guide.'
+    : 'This is an in-person tour at the property.';
+
+  const attendingContext = attending === 'Buyer + spouse'
+    ? "The buyer's spouse will be attending. Include spouse-specific social proof (e.g. other couples who purchased, long-term lifestyle vision, safety and access). Both partners need to feel confident."
+    : attending === 'Buyer + family'
+    ? 'The buyer is bringing family. Acknowledge multi-generational appeal, legacy, outdoor experiences for kids, and shared decision-making.'
+    : 'Only the buyer is attending.';
+
+  const sectionInstruction = sectionOverride
+    ? `Generate ONLY the "${sectionOverride}" section. Return the same JSON structure but with only the relevant key(s) populated. Other keys should be empty arrays or empty strings.`
+    : 'Generate all sections.';
+
+  return `You are preparing a pre-tour buyer prep kit for a land specialist at Mountains West Ranches (MWR) in Duchesne County, Utah. MWR sells A5-zoned agricultural parcels with owner financing (no credit check, $1,000 min down, 10 or 15-year terms at 9.9% interest). ${itin}
+
+Buyer: ${name}
+Lead source: ${source}
+Language track: ${lang}
+Down payment: $${down.toLocaleString()}
+Buyer persona: ${persona}
+Parcel availability: ${availability}
+Tour type: ${tourType}
+Who is attending: ${attending}
+${notes ? `Additional notes: ${notes}` : ''}
+
+PROPERTIES OF INTEREST:
+${propertyBlock}
+
+PERSONA CONTEXT:
+${personaContext[persona] || personaContext['Unknown']}
+
+AVAILABILITY CONTEXT:
+${availabilityContext}
+
+TOUR CONTEXT:
+${tourContext}
+
+ATTENDING CONTEXT:
+${attendingContext}
+
+${sectionInstruction}
+
+Return ONLY valid JSON with exactly these keys. No markdown, no preamble, no em dashes anywhere in the output:
+
+{
+  "parcelFacts": [
+    "fact 1 about the listed properties or Duchesne County A5 land -- specific and useful for the land specialist on tour",
+    "fact 2",
+    "fact 3",
+    "fact 4"
+  ],
+  "waterRightsSummary": "2-3 sentences about water rights context for A5-zoned agricultural parcels in Duchesne County. Mention stock water rights, culinary water access considerations, and what buyers should know.",
+  "objections": [
+    {
+      "title": "Short objection label",
+      "objection": "The likely thing this buyer says or thinks, informed by both the ${source} lead source AND the ${persona} persona",
+      "response": "The land specialist's suggested response -- warm, confident, factual. 2-3 sentences max. No em dashes."
+    },
+    { "title": "Short objection label", "objection": "Second likely objection", "response": "Response" },
+    { "title": "Short objection label", "objection": "Third likely objection", "response": "Response" }
+  ],
+  "talkingPoints": [
+    "Specific talking point 1 tailored to the ${persona} persona, ${source} lead source, ${tourType} tour format, and ${attending} attendance",
+    "Talking point 2", "Talking point 3", "Talking point 4", "Talking point 5"
+  ]${isSpanish ? `,
+  "spanish": {
+    "parcelFacts": ["hecho 1", "hecho 2", "hecho 3", "hecho 4"],
+    "waterRightsSummary": "Resumen en espanol sobre los derechos de agua...",
+    "objections": [
+      {"title": "Etiqueta", "objection": "Lo que podria decir el comprador", "response": "Respuesta del especialista"},
+      {"title": "Etiqueta", "objection": "Segunda objecion", "response": "Respuesta"},
+      {"title": "Etiqueta", "objection": "Tercera objecion", "response": "Respuesta"}
+    ],
+    "talkingPoints": ["Punto 1", "Punto 2", "Punto 3", "Punto 4", "Punto 5"]
+  }` : ''}
+}
+
+Rules:
+- No em dashes anywhere -- use commas, colons, or periods instead
+- ${isSpanish ? 'Spanish section must include ITIN accepted language and be fully in Spanish. English section must NOT include ITIN references.' : 'English only. Never reference ITIN or SSN.'}
+- Objections must reflect BOTH the lead source behavior AND the persona motivations
+- Reference the specific property names/details provided where possible
+- Talking points must help the land specialist build rapport and move toward a close
+- ${availability !== 'Available' ? 'Reflect the parcel availability status in talking points.' : ''}
+- ${tourType === 'Virtual' ? 'Talking points should include virtual-specific pacing and remote rapport notes.' : ''}
+- ${attending === 'Buyer + spouse' ? 'At least one talking point should address the spouse directly or include spouse-friendly social proof.' : ''}
+- No generic filler -- every sentence must be immediately useful on tour`;
+}
+
+// ---- RENDER HELPERS ----
+function renderParcel(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `<div class="ai-content"><ul>${d.parcelFacts.map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+}
+function renderWater(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `<div class="water-badge"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg> A5 Agricultural Zone</div>
+    <div class="ai-content"><p>${d.waterRightsSummary}</p></div>`;
+}
+function renderObjections(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `<div class="objection-list">${d.objections.map((o, i) => `
+    <div class="objection-item">
+      <div class="objection-head"><span class="obj-num">${i+1}</span>${o.title}</div>
+      <div class="objection-body">
+        <div class="objection-label">${isSpanish ? 'Lo que podrian decir' : 'What they might say'}</div>
+        <div class="objection-text">${o.objection}</div>
+        <div class="response-block">
+          <div class="objection-label">${isSpanish ? 'Respuesta sugerida' : 'Suggested response'}</div>
+          <div class="objection-text">${o.response}</div>
+        </div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+function renderTalkingPoints(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `<div class="talking-points">${d.talkingPoints.map((tp) => `
+    <div class="tp-item">
+      <div class="tp-bullet"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="tp-text">${tp}</div>
+      <button class="tp-copy" title="Copy talking point" onclick="copyTalkingPoint(this, '${tp.replace(/'/g, "&#39;").replace(/"/g, "&quot;")}')">
+        <svg class="icon-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <svg class="icon-check" viewBox="0 0 24 24" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>`).join('')}</div>`;
+}
+function renderAllSections(parsed) {
+  const isSpanish = currentLang === 'es';
+  document.getElementById('out-parcel').innerHTML = renderParcel(parsed, isSpanish);
+  document.getElementById('out-water').innerHTML = renderWater(parsed, isSpanish);
+  document.getElementById('out-objections').innerHTML = renderObjections(parsed, isSpanish);
+  document.getElementById('out-talking').innerHTML = renderTalkingPoints(parsed, isSpanish);
+}
+
+// ---- LANGUAGE SWITCH ----
+function switchLang(lang) {
+  currentLang = lang;
+  document.getElementById('lang-btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-btn-es').classList.toggle('active', lang === 'es');
+  if (lastParsed) renderAllSections(lastParsed);
+}
+
+// ---- COPY ----
+function copyTalkingPoint(btn, text) {
+  const decoded = text.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+  navigator.clipboard.writeText(decoded).then(() => {
+    btn.classList.add('copied');
+    btn.querySelector('.icon-copy').style.display = 'none';
+    btn.querySelector('.icon-check').style.display = '';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.querySelector('.icon-copy').style.display = '';
+      btn.querySelector('.icon-check').style.display = 'none';
+    }, 1800);
+  });
+}
+
+// ---- SKELETON ----
+function showSkeleton(id) {
+  document.getElementById(id).innerHTML = `
+    <div class="stream-indicator"><span class="stream-dot"></span> Generating...</div>
+    <div class="skeleton" style="width:90%"></div>
+    <div class="skeleton" style="width:75%"></div>
+    <div class="skeleton" style="width:82%"></div>`;
+}
+
+// ---- REGENERATE SECTION ----
+async function regenSection(sectionKey) {
+  if (!lastParsed) return;
+  const btn = document.querySelector(`[onclick="regenSection('${sectionKey}')"]`);
+  btn.classList.add('spinning');
+  const map = { parcel: 'out-parcel', water: 'out-water', objections: 'out-objections', talking: 'out-talking' };
+  showSkeleton(map[sectionKey]);
+  const sectionNameMap = { parcel: 'parcelFacts', water: 'waterRightsSummary', objections: 'objections', talking: 'talkingPoints' };
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: buildPrompt(sectionNameMap[sectionKey]) }] })
+    });
+    const data = await response.json();
+    const raw = data.content?.find(b => b.type === 'text')?.text || '';
+    const fresh = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    if (sectionKey === 'parcel' && fresh.parcelFacts?.length) { lastParsed.parcelFacts = fresh.parcelFacts; if (fresh.spanish?.parcelFacts) lastParsed.spanish.parcelFacts = fresh.spanish.parcelFacts; }
+    if (sectionKey === 'water' && fresh.waterRightsSummary) { lastParsed.waterRightsSummary = fresh.waterRightsSummary; if (fresh.spanish?.waterRightsSummary) lastParsed.spanish.waterRightsSummary = fresh.spanish.waterRightsSummary; }
+    if (sectionKey === 'objections' && fresh.objections?.length) { lastParsed.objections = fresh.objections; if (fresh.spanish?.objections) lastParsed.spanish.objections = fresh.spanish.objections; }
+    if (sectionKey === 'talking' && fresh.talkingPoints?.length) { lastParsed.talkingPoints = fresh.talkingPoints; if (fresh.spanish?.talkingPoints) lastParsed.spanish.talkingPoints = fresh.spanish.talkingPoints; }
+    renderAllSections(lastParsed);
+  } catch (err) {
+    document.getElementById(map[sectionKey]).innerHTML = `<div style="color:#c0392b;font-size:13px;padding:8px 0;">Error regenerating. Please try again.</div>`;
+    console.error(err);
+  }
+  btn.classList.remove('spinning');
+}
+
+// ---- MAIN GENERATE ----
+async function generateBrief() {
+  const name = document.getElementById('f-name').value.trim();
+  const source = document.getElementById('f-source').value;
+  const lang = document.getElementById('f-lang').value;
+  const down = parseFloat(document.getElementById('f-down').value) || 0;
+  const termPref = document.getElementById('f-term').value;
+  const persona = document.getElementById('f-persona').value;
+  const availability = toggleState['tg-availability'];
+  const tourType = toggleState['tg-tourtype'];
+  const attending = toggleState['tg-attending'];
+  const isSpanish = lang === 'Spanish';
+  const properties = collectProperties();
+
+  if (!name) { alert('Please enter the buyer name.'); return; }
+  if (down < 1000) { alert('Minimum down payment is $1,000.'); return; }
+
+  const btn = document.getElementById('generate-btn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.querySelector('.btn-text').textContent = 'Generating...';
+
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('brief-output').classList.add('visible');
+
+  currentLang = 'en';
+  document.getElementById('lang-btn-en').classList.add('active');
+  document.getElementById('lang-btn-es').classList.remove('active');
+  document.getElementById('lang-toggle-bar').classList.toggle('visible', isSpanish);
+
+  // Hero
+  document.getElementById('brief-title').textContent = `Prep Kit -- ${name}`;
+  document.getElementById('out-name').textContent = name;
+
+  const availClass = availability === 'Available' ? 'available' : availability === 'Under Contract' ? 'under-contract' : 'last-one';
+  const availDot = `<span class="availability-chip ${availClass}"><span class="avail-dot"></span>${availability}</span>`;
+  const chips = [
+    `<span class="meta-chip${isSpanish ? ' highlight' : ''}">${lang}</span>`,
+    `<span class="meta-chip">${source}</span>`,
+    persona !== 'Unknown' ? `<span class="meta-chip">${persona}</span>` : '',
+    `<span class="meta-chip">${tourType}</span>`,
+    availDot
+  ].filter(Boolean).join('');
+  document.getElementById('out-chips').innerHTML = chips;
+
+  document.getElementById('out-tour-info').innerHTML = `
+    <div class="tour-stat"><div class="tour-stat-label">Properties</div><div class="tour-stat-value">${formatPropertiesForHero(properties)}</div></div>
+    <div class="tour-stat"><div class="tour-stat-label">Down Payment</div><div class="tour-stat-value">$${down.toLocaleString()}</div></div>
+    <div class="tour-stat"><div class="tour-stat-label">Attending</div><div class="tour-stat-value">${attending}</div></div>`;
+
+  renderReadinessBadge();
+
+  // Financing -- try to get price from first property with one
+  let priceGuess = null;
+  properties.forEach(p => { if (!priceGuess) priceGuess = parsePrice(p.content) || parsePrice(p.name); });
+  document.getElementById('out-financing').innerHTML = priceGuess && down
+    ? buildFinancing(priceGuess, down, termPref)
+    : `<div class="fin-note">Include a price in a property's details field to see the full financing breakdown. Down payment entered: $${down.toLocaleString()}. Minimum down: $1,000. No credit check required.</div>`;
+
+  ['out-parcel','out-water','out-objections','out-talking'].forEach(id => showSkeleton(id));
+
+  const now = new Date();
+  document.getElementById('brief-generated-at').innerHTML = `Generated <strong>${now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}</strong> at ${now.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})}`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: isSpanish ? 2200 : 1500,
+        messages: [{ role: 'user', content: buildPrompt(null) }]
+      })
+    });
+    const data = await response.json();
+    const raw = data.content?.find(b => b.type === 'text')?.text || '';
+    lastParsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    renderAllSections(lastParsed);
+  } catch (err) {
+    ['out-parcel','out-water','out-objections','out-talking'].forEach(id => {
+      document.getElementById(id).innerHTML = `<div style="color:#c0392b;font-size:13px;padding:8px 0;">Error generating content. Please try again.</div>`;
+    });
+    console.error(err);
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  btn.querySelector('.btn-text').textContent = 'Generate Prep Kit';
+}
+
+// ---- RESET ----
+function resetForm() {
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-down').value = '';
+  document.getElementById('f-notes').value = '';
+  document.getElementById('f-persona').value = 'Unknown';
+  document.getElementById('f-lang').value = 'English';
+  document.getElementById('property-list').innerHTML = '';
+  propertyCount = 0;
+  addProperty(); // re-add the first blank entry
+  ['tg-availability','tg-tourtype','tg-attending'].forEach(id => {
+    const group = document.getElementById(id);
+    group.querySelectorAll('button').forEach((b, i) => {
+      b.classList.remove('active','green','amber','red');
+      if (i === 0) { b.classList.add('active'); if (id === 'tg-availability') b.classList.add('green'); }
+    });
+    if (id === 'tg-availability') toggleState[id] = 'Available';
+    if (id === 'tg-tourtype') toggleState[id] = 'In-Person';
+    if (id === 'tg-attending') toggleState[id] = 'Buyer only';
+  });
+  lastParsed = null;
+  currentLang = 'en';
+  document.getElementById('lang-toggle-bar').classList.remove('visible');
+  document.getElementById('brief-output').classList.remove('visible');
+  document.getElementById('empty-state').style.display = '';
+}
+
+// Initialize with one property entry on load
+addProperty();
+</script>
+
+// Toggle groups
+const toggleState = {
+  'tg-availability': 'Available',
+  'tg-tourtype': 'In-Person',
+  'tg-attending': 'Buyer only'
+};
+
+function setToggle(groupId, btn, value) {
+  toggleState[groupId] = value;
+  const group = document.getElementById(groupId);
+  group.querySelectorAll('button').forEach(b => {
+    b.classList.remove('active', 'green', 'amber', 'red');
+  });
+  btn.classList.add('active');
+  if (groupId === 'tg-availability') {
+    if (value === 'Available') btn.classList.add('green');
+    else if (value === 'Under Contract') btn.classList.add('amber');
+    else btn.classList.add('red');
+  }
+  updateReadiness();
+}
+
+function handleLangChange() {
+  // Reset Spanish toggle when lang changes
+  const bar = document.getElementById('lang-toggle-bar');
+  if (document.getElementById('f-lang').value === 'Spanish') {
+    // Will be shown after generation
+  } else {
+    bar.classList.remove('visible');
+  }
+}
+
+// ---- READINESS SCORE ----
+function computeReadiness() {
+  const source = document.getElementById('f-source').value;
+  const parcel = document.getElementById('f-parcel').value;
+  const down = parseFloat(document.getElementById('f-down').value) || 0;
+  const price = parsePrice(parcel);
+  const pct = price ? (down / price) : 0;
+  const highIntent = ['Referral', 'LandWatch'].includes(source);
+  const midIntent = ['Facebook', 'Google', 'TikTok'].includes(source);
+
+  if (pct >= 0.1 && highIntent) return 'veryhot';
+  if (pct >= 0.1 && midIntent) return 'hot';
+  if (pct >= 0.05 || highIntent) return 'warm';
+  return 'cold';
+}
+
+const readinessLabels = {
+  cold: 'Cold',
+  warm: 'Warm',
+  hot: 'Hot',
+  veryhot: 'Very Hot'
+};
+const readinessTips = {
+  cold: 'Low down and lower-intent source. Focus on building value and financing ease.',
+  warm: 'Moderate signals. Lead with the monthly payment story and owner financing simplicity.',
+  hot: 'Strong down or high-intent source. Move toward urgency and close.',
+  veryhot: 'High down + high-intent source. This buyer is ready. Prioritize decision-making support.'
+};
+
+function updateReadiness() {
+  const wrap = document.getElementById('readiness-badge-wrap');
+  if (!wrap) return;
+  if (wrap.innerHTML === '' && !document.getElementById('brief-output').classList.contains('visible')) return;
+  renderReadinessBadge();
+}
+
+function renderReadinessBadge() {
+  const score = computeReadiness();
+  const wrap = document.getElementById('readiness-badge-wrap');
+  wrap.innerHTML = `
+    <div class="readiness-badge ${score}">
+      <div class="badge-dot"></div>
+      Buyer Readiness: ${readinessLabels[score]}
+      <div class="badge-tooltip">${readinessTips[score]}</div>
+    </div>`;
+}
+
+// ---- FINANCING ----
+function calcMonthly(principal, downPayment, years) {
+  const p = principal - downPayment;
+  if (p <= 0) return 0;
+  const r = INTEREST_RATE / 12;
+  const n = years * 12;
+  return p * (r * Math.pow(1+r, n)) / (Math.pow(1+r, n) - 1);
+}
+function fmt(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtInt(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+
+function buildFinancing(price, down, termPref) {
+  if (!price || !down) return null;
+  const remaining = price - down;
+  const terms = termPref === 'both' ? [10, 15] : [parseInt(termPref)];
+  let html = '<div class="financing-grid">';
+  html += `<div class="fin-cell"><div class="fin-cell-label">Purchase Price</div><div class="fin-cell-val">${fmtInt(price)}</div></div>`;
+  html += `<div class="fin-cell"><div class="fin-cell-label">Down Payment</div><div class="fin-cell-val">${fmtInt(down)}</div></div>`;
+  html += `<div class="fin-cell"><div class="fin-cell-label">Amount Financed</div><div class="fin-cell-val">${fmtInt(remaining)}</div></div>`;
+  html += '</div><div class="financing-grid">';
+  terms.forEach(yr => {
+    const monthly = calcMonthly(price, down, yr);
+    const total = down + monthly * yr * 12;
+    html += `<div class="fin-cell accent"><div class="fin-cell-label">${yr}-Year Term</div><div class="fin-cell-val">${fmt(monthly)}/mo</div><div class="fin-cell-sub">Total paid: ${fmtInt(total)}</div></div>`;
+  });
+  if (terms.length === 1) html += '<div class="fin-cell"></div>';
+  html += '</div>';
+  html += `<div class="fin-note">No credit check required. $1,000 minimum down. Owner financing through MWR. ${down >= 1000 ? "Buyer's down payment qualifies." : "Minimum $1,000 down required."}</div>`;
+  return html;
+}
+
+function parsePrice(str) {
+  const m = str.match(/[\$]?([\d,]+)/);
+  return m ? parseFloat(m[1].replace(/,/g,'')) : null;
+}
+
+// ---- PROMPT BUILDER ----
+function buildPrompt(sectionOverride) {
+  const name = document.getElementById('f-name').value.trim();
+  const source = document.getElementById('f-source').value;
+  const lang = document.getElementById('f-lang').value;
+  const subdivision = document.getElementById('f-subdivision').value;
+  const parcel = document.getElementById('f-parcel').value.trim();
+  const down = parseFloat(document.getElementById('f-down').value) || 0;
+  const notes = document.getElementById('f-notes').value.trim();
+  const persona = document.getElementById('f-persona').value;
+  const availability = toggleState['tg-availability'];
+  const tourType = toggleState['tg-tourtype'];
+  const attending = toggleState['tg-attending'];
+  const isSpanish = lang === 'Spanish';
+  const itin = isSpanish ? 'ITIN accepted (no SSN required). ' : '';
+
+  const personaContext = {
+    'Dave': 'Dave is a self-sufficient homesteader. He cares about acreage utility, water access, fencing, zoning flexibility, and long-term self-reliance. He may object to anything that feels like HOA control or government restriction. Lead with what he can DO on the land.',
+    'Jim': 'Jim is a retirement or investment buyer. He cares about asset appreciation, low-hassle ownership, and whether this land holds or grows in value. He may compare to 401k or other investments. Lead with land as a tangible, appreciating asset.',
+    'Ryan': 'Ryan is a hunter or recreation buyer. He cares about hunting, ATV access, wildlife, proximity to public land, and seasonality. He may already own land elsewhere. Lead with recreational access and lifestyle, not agriculture.',
+    'Sarah': 'Sarah is a remote-work or off-grid lifestyle buyer. She cares about internet access (or Starlink feasibility), building a cabin or tiny home, solar viability, and escaping suburban life. She may bring a partner. Lead with vision and possibility.',
+    'Frank': 'Frank is a Spanish-speaking buyer. He cares about being understood and respected. He may be unfamiliar with land buying in Utah, and ITIN financing is a key differentiator. Lead with trust, simplicity, and community connection.',
+    'Unknown': 'Buyer persona is unknown. Use context clues from the lead source and notes to infer motivations.'
+  };
+
+  const availabilityContext = availability === 'Available'
+    ? 'The parcel is currently available.'
+    : availability === 'Under Contract'
+    ? 'This parcel is currently under contract. Talking points should acknowledge this and focus on comparable available parcels or getting on a waitlist.'
+    : 'This is the last available parcel in this subdivision. Use appropriate urgency and scarcity language in talking points.';
+
+  const tourContext = tourType === 'Virtual'
+    ? 'This is a virtual tour. Kelly should pace the conversation differently, rely more on descriptions and data, and build rapport remotely.'
+    : tourType === 'Self-Guided'
+    ? 'This is a self-guided tour. Kelly will not be present on-site. Talking points should be formatted for a printed or texted guide.'
+    : 'This is an in-person tour at the property.';
+
+  const attendingContext = attending === 'Buyer + spouse'
+    ? 'The buyer\'s spouse will be attending. Include spouse-specific social proof (e.g. other couples who purchased, long-term lifestyle vision, safety and access). Both partners need to feel confident.'
+    : attending === 'Buyer + family'
+    ? 'The buyer is bringing family. Acknowledge multi-generational appeal, legacy, outdoor experiences for kids, and shared decision-making.'
+    : 'Only the buyer is attending.';
+
+  const sectionInstruction = sectionOverride
+    ? `Generate ONLY the "${sectionOverride}" section. Return the same JSON structure but with only the relevant key(s) populated. Other keys should be empty arrays or empty strings.`
+    : 'Generate all sections.';
+
+  const basePrompt = `You are preparing a pre-tour buyer prep kit for a land specialist at Mountains West Ranches (MWR) in Duchesne County, Utah. MWR sells A5-zoned agricultural parcels with owner financing (no credit check, $1,000 min down, 10 or 15-year terms at 9.9% interest). ${itin}
+
+Buyer: ${name}
+Parcel(s) of interest: ${parcel}
+Subdivision: ${subdivision}, Duchesne County, Utah
+Lead source: ${source}
+Language track: ${lang}
+Down payment: $${down.toLocaleString()}
+Buyer persona: ${persona}
+Parcel availability: ${availability}
+Tour type: ${tourType}
+Who is attending: ${attending}
+${notes ? `Additional notes: ${notes}` : ''}
+
+PERSONA CONTEXT:
+${personaContext[persona] || personaContext['Unknown']}
+
+AVAILABILITY CONTEXT:
+${availabilityContext}
+
+TOUR CONTEXT:
+${tourContext}
+
+ATTENDING CONTEXT:
+${attendingContext}
+
+${sectionInstruction}
+
+Return ONLY valid JSON with exactly these keys. No markdown, no preamble, no em dashes anywhere in the output:
+
+{
+  "parcelFacts": [
+    "fact 1 about the parcel/subdivision/location -- specific and useful for Kelly on tour",
+    "fact 2",
+    "fact 3",
+    "fact 4"
+  ],
+  "waterRightsSummary": "2-3 sentences about water rights context for A5-zoned agricultural parcels in Duchesne County. Mention stock water rights, culinary water access considerations, and what buyers should know. Be accurate and practical.",
+  "objections": [
+    {
+      "title": "Short objection label",
+      "objection": "The likely thing this buyer says or thinks, informed by both the ${source} lead source AND the ${persona} persona",
+      "response": "The land specialist's suggested response -- warm, confident, factual. 2-3 sentences max. No em dashes."
+    },
+    {
+      "title": "Short objection label",
+      "objection": "Second likely objection",
+      "response": "Response"
+    },
+    {
+      "title": "Short objection label",
+      "objection": "Third likely objection",
+      "response": "Response"
+    }
+  ],
+  "talkingPoints": [
+    "Specific talking point 1 tailored to the ${persona} persona, ${source} lead source, ${tourType} tour format, and ${attending} attendance",
+    "Talking point 2",
+    "Talking point 3",
+    "Talking point 4",
+    "Talking point 5"
+  ]${isSpanish ? `,
+  "spanish": {
+    "parcelFacts": ["hecho 1", "hecho 2", "hecho 3", "hecho 4"],
+    "waterRightsSummary": "Resumen en espanol sobre los derechos de agua...",
+    "objections": [
+      {"title": "Etiqueta", "objection": "Lo que podria decir el comprador", "response": "Respuesta del especialista"},
+      {"title": "Etiqueta", "objection": "Segunda objecion", "response": "Respuesta"},
+      {"title": "Etiqueta", "objection": "Tercera objecion", "response": "Respuesta"}
+    ],
+    "talkingPoints": ["Punto 1", "Punto 2", "Punto 3", "Punto 4", "Punto 5"]
+  }` : ''}
+}
+
+Rules:
+- No em dashes anywhere -- use commas, colons, or periods instead
+- ${isSpanish ? 'Spanish section must include ITIN accepted language and be fully in Spanish. English section must NOT include ITIN references.' : 'English only. Never reference ITIN or SSN in English output.'}
+- Objections must reflect BOTH the lead source behavior AND the persona motivations
+- Parcel facts should reference ${subdivision} and Duchesne County specifically
+- Talking points must help the land specialist build rapport and move toward a close -- not just describe land
+- ${availability !== 'Available' ? 'Reflect the parcel availability status in talking points.' : ''}
+- ${tourType === 'Virtual' ? 'Talking points should include virtual-specific pacing and remote rapport notes.' : ''}
+- ${attending === 'Buyer + spouse' ? 'At least one talking point should address the spouse directly or include spouse-friendly social proof.' : ''}
+- No generic filler -- every sentence must be immediately useful on tour`;
+
+  return basePrompt;
+}
+
+// ---- RENDER HELPERS ----
+function renderParcel(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `<div class="ai-content"><ul>${d.parcelFacts.map(f => `<li>${f}</li>`).join('')}</ul></div>`;
+}
+
+function renderWater(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `
+    <div class="water-badge"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg> A5 Agricultural Zone</div>
+    <div class="ai-content"><p>${d.waterRightsSummary}</p></div>`;
+}
+
+function renderObjections(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `<div class="objection-list">${d.objections.map((o, i) => `
+    <div class="objection-item">
+      <div class="objection-head"><span class="obj-num">${i+1}</span>${o.title}</div>
+      <div class="objection-body">
+        <div class="objection-label">${isSpanish ? 'Lo que podrian decir' : 'What they might say'}</div>
+        <div class="objection-text">${o.objection}</div>
+        <div class="response-block">
+          <div class="objection-label">${isSpanish ? 'Respuesta sugerida' : "Kelly's response"}</div>
+          <div class="objection-text">${o.response}</div>
+        </div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function renderTalkingPoints(data, isSpanish) {
+  const d = isSpanish && data.spanish ? data.spanish : data;
+  return `<div class="talking-points">${d.talkingPoints.map((tp, i) => `
+    <div class="tp-item">
+      <div class="tp-bullet"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <div class="tp-text">${tp}</div>
+      <button class="tp-copy" title="Copy talking point" onclick="copyTalkingPoint(this, '${tp.replace(/'/g, "&#39;").replace(/"/g, "&quot;")}')">
+        <svg class="icon-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        <svg class="icon-check" viewBox="0 0 24 24" style="display:none"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+    </div>`).join('')}</div>`;
+}
+
+function renderAllSections(parsed) {
+  const isSpanish = currentLang === 'es';
+  document.getElementById('out-parcel').innerHTML = renderParcel(parsed, isSpanish);
+  document.getElementById('out-water').innerHTML = renderWater(parsed, isSpanish);
+  document.getElementById('out-objections').innerHTML = renderObjections(parsed, isSpanish);
+  document.getElementById('out-talking').innerHTML = renderTalkingPoints(parsed, isSpanish);
+}
+
+// ---- LANGUAGE SWITCH ----
+function switchLang(lang) {
+  currentLang = lang;
+  document.getElementById('lang-btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-btn-es').classList.toggle('active', lang === 'es');
+  if (lastParsed) renderAllSections(lastParsed);
+}
+
+// ---- COPY TALKING POINT ----
+function copyTalkingPoint(btn, text) {
+  const decoded = text.replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+  navigator.clipboard.writeText(decoded).then(() => {
+    btn.classList.add('copied');
+    btn.querySelector('.icon-copy').style.display = 'none';
+    btn.querySelector('.icon-check').style.display = '';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.querySelector('.icon-copy').style.display = '';
+      btn.querySelector('.icon-check').style.display = 'none';
+    }, 1800);
+  });
+}
+
+// ---- SKELETON ----
+function showSkeleton(id) {
+  document.getElementById(id).innerHTML = `
+    <div class="stream-indicator"><span class="stream-dot"></span> Generating...</div>
+    <div class="skeleton" style="width:90%"></div>
+    <div class="skeleton" style="width:75%"></div>
+    <div class="skeleton" style="width:82%"></div>`;
+}
+
+// Initialize with one property entry on load
+addProperty();
+</script>
+</body>
+</html>
