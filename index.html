@@ -10,12 +10,13 @@
 :root{
   --green:#759A7A;--green-light:#eaf1eb;--green-dark:#4d6e52;
   --dark:#1C1C1C;--dark2:#252525;--mid:#666;--light:#F1F1F1;
-  --white:#fff;--border:#e2e2e2;
+  --white:#fff;--border:#e2e2e2;--amber:#d97706;--red:#dc2626;
   --ff-display:'Playfair Display',Georgia,serif;
   --ff-body:'IBM Plex Sans',sans-serif;
   --ff-mono:'IBM Plex Mono',monospace;
 }
 body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-height:100vh;}
+/* HEADER */
 .app-header{background:var(--dark);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:60px;border-bottom:2px solid var(--green);position:sticky;top:0;z-index:100;}
 .brand{display:flex;align-items:center;gap:12px;}
 .brand-mark{width:32px;height:32px;background:var(--green);border-radius:6px;display:grid;place-items:center;}
@@ -23,62 +24,84 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
 .brand-name{font-family:var(--ff-display);font-size:16px;color:white;}
 .brand-sub{font-size:11px;color:#777;font-family:var(--ff-mono);margin-top:1px;}
 .team-badge{background:var(--green);color:white;font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;font-family:var(--ff-mono);}
-.layout{display:grid;grid-template-columns:390px 1fr;min-height:calc(100vh - 60px);}
-.form-panel{background:var(--white);border-right:1px solid var(--border);padding:28px 24px;overflow-y:auto;height:calc(100vh - 60px);position:sticky;top:60px;}
+/* LAYOUT */
+.layout{display:grid;grid-template-columns:400px 1fr;min-height:calc(100vh - 60px);}
+.form-panel{background:var(--white);border-right:1px solid var(--border);padding:24px 22px;overflow-y:auto;height:calc(100vh - 60px);position:sticky;top:60px;}
 .form-panel h2{font-family:var(--ff-display);font-size:20px;color:var(--dark);margin-bottom:4px;}
-.form-sub{font-size:12px;color:var(--mid);margin-bottom:24px;line-height:1.5;}
-.field{margin-bottom:16px;}
+.form-sub{font-size:12px;color:var(--mid);margin-bottom:20px;line-height:1.5;}
+.section-divider{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green-dark);background:var(--green-light);border-radius:6px;padding:5px 10px;margin:18px 0 12px;display:flex;align-items:center;gap:6px;}
+.section-divider svg{width:11px;height:11px;stroke:var(--green-dark);fill:none;stroke-width:2;}
+/* FIELDS */
+.field{margin-bottom:14px;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.field label,.field-lbl{display:block;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
-.field input,.field select,.field textarea{width:100%;font-family:var(--ff-body);font-size:13px;color:var(--dark);background:var(--light);border:1px solid var(--border);border-radius:8px;padding:10px 12px;outline:none;transition:border-color .15s,background .15s;appearance:none;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);background:var(--white);}
-.field textarea{height:72px;resize:vertical;}
+.field-row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.field label,.field-lbl{display:block;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.field input,.field textarea{width:100%;font-family:var(--ff-body);font-size:13px;color:var(--dark);background:var(--light);border:1px solid var(--border);border-radius:8px;padding:9px 11px;outline:none;transition:border-color .15s,background .15s;}
+.field input:focus,.field textarea:focus{border-color:var(--green);background:var(--white);}
+.field textarea{height:68px;resize:vertical;}
+.price-input-wrap{position:relative;}
+.price-input-wrap span{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--mid);font-size:13px;pointer-events:none;}
+.price-input-wrap input{padding-left:22px;}
 .sel-wrap{position:relative;}
-.sel-wrap select{width:100%;font-family:var(--ff-body);font-size:13px;color:var(--dark);background:var(--light);border:1px solid var(--border);border-radius:8px;padding:10px 32px 10px 12px;outline:none;appearance:none;cursor:pointer;transition:border-color .15s,background .15s;}
-.sel-wrap select:focus{border-color:var(--green);background:var(--white);}
-.sel-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;}
-.field-note{font-size:11px;color:var(--mid);font-style:italic;line-height:1.5;margin-bottom:8px;}
-.divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+.sel-wrap select{width:100%;font-family:var(--ff-body);font-size:13px;color:var(--dark);background:var(--light);border:1px solid var(--border);border-radius:8px;padding:9px 30px 9px 11px;outline:none;appearance:none;cursor:pointer;transition:border-color .15s;}
+.sel-wrap select:focus{border-color:var(--green);}
+.sel-arrow{position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.field-note{font-size:11px;color:var(--mid);font-style:italic;line-height:1.5;margin-bottom:7px;}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0;}
+/* MIN DOWN NOTICE */
+.min-down-notice{background:#fff8eb;border:1px solid #fde68a;border-radius:8px;padding:8px 12px;font-size:12px;color:#92400e;line-height:1.5;margin-top:6px;display:none;}
+.min-down-notice.show{display:block;}
+.min-down-notice strong{font-weight:600;}
+/* TOGGLE GROUPS */
 .tg{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-.tg button{flex:1;padding:9px 6px;font-family:var(--ff-body);font-size:12px;font-weight:500;background:var(--light);border:none;border-right:1px solid var(--border);cursor:pointer;color:var(--mid);transition:all .15s;line-height:1.3;}
+.tg button{flex:1;padding:8px 5px;font-family:var(--ff-body);font-size:12px;font-weight:500;background:var(--light);border:none;border-right:1px solid var(--border);cursor:pointer;color:var(--mid);transition:all .15s;line-height:1.3;}
 .tg button:last-child{border-right:none;}
 .tg button.active{background:var(--dark);color:white;}
 .tg button.active.g{background:var(--green);}
-.tg button.active.a{background:#d97706;}
-.tg button.active.r{background:#dc2626;}
+.tg button.active.a{background:var(--amber);}
+.tg button.active.r{background:var(--red);}
+/* PROPERTY ENTRIES */
 .prop-list{display:grid;gap:10px;}
 .prop-entry{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--light);}
 .prop-head{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--white);border-bottom:1px solid var(--border);}
 .prop-num{width:18px;height:18px;background:var(--green);border-radius:50%;color:white;font-size:10px;font-weight:700;display:grid;place-items:center;flex-shrink:0;font-family:var(--ff-mono);}
 .prop-lbl{font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;flex:1;}
 .prop-rm{width:20px;height:20px;border-radius:4px;border:1px solid var(--border);background:white;display:grid;place-items:center;cursor:pointer;color:#aaa;font-size:14px;line-height:1;transition:all .15s;}
-.prop-rm:hover{background:#fee;border-color:#fcc;color:#c0392b;}
+.prop-rm:hover{background:#fee;border-color:#fcc;color:var(--red);}
 .prop-body{padding:10px;display:grid;gap:7px;}
 .prop-src-tg{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
 .prop-src-tg button{flex:1;padding:6px 4px;font-family:var(--ff-body);font-size:11px;font-weight:500;background:var(--white);border:none;border-right:1px solid var(--border);cursor:pointer;color:var(--mid);transition:all .15s;}
 .prop-src-tg button:last-child{border-right:none;}
 .prop-src-tg button.active{background:var(--dark);color:white;}
-.prop-body input,.prop-body textarea{width:100%;font-family:var(--ff-body);font-size:12px;color:var(--dark);background:var(--white);border:1px solid var(--border);border-radius:6px;padding:8px 10px;outline:none;transition:border-color .15s;appearance:none;resize:vertical;}
+.prop-body input,.prop-body textarea{width:100%;font-family:var(--ff-body);font-size:12px;color:var(--dark);background:var(--white);border:1px solid var(--border);border-radius:6px;padding:7px 9px;outline:none;transition:border-color .15s;appearance:none;resize:vertical;}
 .prop-body input:focus,.prop-body textarea:focus{border-color:var(--green);}
-.prop-body textarea{height:64px;}
-.add-prop-btn{display:flex;align-items:center;gap:7px;width:100%;padding:9px 12px;border-radius:8px;border:1px dashed var(--border);background:transparent;font-family:var(--ff-body);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;margin-top:4px;}
+.prop-body textarea{height:60px;}
+.prop-price-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.prop-flags{display:flex;gap:6px;flex-wrap:wrap;}
+.prop-flag-btn{padding:4px 10px;font-size:11px;font-family:var(--ff-body);font-weight:500;border:1px solid var(--border);border-radius:20px;background:var(--white);color:var(--mid);cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:4px;}
+.prop-flag-btn.active{border-color:var(--amber);background:#fff8eb;color:#92400e;}
+.prop-flag-lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.06em;font-family:var(--ff-mono);}
+.add-prop-btn{display:flex;align-items:center;gap:7px;width:100%;padding:8px 11px;border-radius:8px;border:1px dashed var(--border);background:transparent;font-family:var(--ff-body);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;margin-top:4px;}
 .add-prop-btn:hover{border-color:var(--green);color:var(--green-dark);background:var(--green-light);}
-.add-prop-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;}
-.gen-btn{width:100%;background:var(--dark);color:white;border:none;padding:14px;border-radius:10px;font-family:var(--ff-body);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;}
-.gen-btn:hover{background:var(--dark2);}
+.add-prop-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;}
+/* GENERATE */
+.gen-btn{width:100%;background:var(--dark);color:white;border:none;padding:13px;border-radius:10px;font-family:var(--ff-body);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;}
+.gen-btn:hover:not(:disabled){background:var(--dark2);}
 .gen-btn:disabled{background:#aaa;cursor:not-allowed;}
-.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.spin{width:15px;height:15px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
 .gen-btn.loading .spin{display:block;}
-.reset-lnk{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--mid);cursor:pointer;text-decoration:underline;}
+.reset-lnk{display:block;text-align:center;margin-top:10px;font-size:12px;color:var(--mid);cursor:pointer;text-decoration:underline;}
+/* OUTPUT */
 .output-panel{padding:32px 36px;overflow-y:auto;}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;text-align:center;color:var(--mid);}
 .empty-icon{width:64px;height:64px;background:var(--white);border-radius:16px;border:1px solid var(--border);display:grid;place-items:center;margin-bottom:16px;}
 .empty-icon svg{width:30px;height:30px;stroke:var(--green);fill:none;stroke-width:1.5;}
 .empty-state h3{font-family:var(--ff-display);font-size:20px;color:var(--dark);margin-bottom:6px;}
 .empty-state p{font-size:13px;line-height:1.6;max-width:320px;}
+/* BRIEF */
 .brief{display:none;max-width:840px;}
 .brief.visible{display:block;}
-.brief-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;}
+.brief-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
 .brief-topbar h2{font-family:var(--ff-display);font-size:22px;color:var(--dark);}
 .brief-actions{display:flex;gap:8px;}
 .action-btn{font-family:var(--ff-body);font-size:12px;font-weight:500;padding:7px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--dark);transition:all .15s;}
@@ -86,21 +109,24 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
 .action-btn.primary{background:var(--green);color:white;border-color:var(--green);}
 .action-btn.primary:hover{background:var(--green-dark);}
 .brief-card{background:var(--white);border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.06);}
-.brief-hero{background:var(--dark);padding:28px 32px;position:relative;overflow:hidden;}
+/* HERO */
+.brief-hero{background:var(--dark);padding:26px 32px;position:relative;overflow:hidden;}
 .brief-hero::before{content:'';position:absolute;top:0;right:0;bottom:0;width:6px;background:var(--green);}
-.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
-.buyer-name{font-family:var(--ff-display);font-size:28px;color:white;line-height:1.1;}
-.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;}
-.chip{font-size:11px;font-family:var(--ff-mono);padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:4px;}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px;flex-wrap:wrap;}
+.buyer-name{font-family:var(--ff-display);font-size:26px;color:white;line-height:1.1;}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.chip{font-size:11px;font-family:var(--ff-mono);padding:3px 9px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:4px;}
 .chip.hi{background:var(--green);color:white;border-color:var(--green);}
 .chip.avail-ok{background:rgba(117,154,122,.2);color:#a3d4a8;border:1px solid rgba(117,154,122,.4);}
 .chip.avail-uc{background:rgba(234,179,8,.2);color:#fde68a;border:1px solid rgba(234,179,8,.4);}
 .chip.avail-last{background:rgba(220,38,38,.2);color:#fca5a5;border:1px solid rgba(220,38,38,.4);}
 .avail-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0;}
-.hero-stats{display:flex;gap:20px;flex-wrap:wrap;}
+.hero-stats{display:flex;gap:18px;flex-wrap:wrap;}
+.stat-item{display:flex;flex-direction:column;}
 .stat-label{font-size:10px;color:rgba(255,255,255,.45);font-family:var(--ff-mono);text-transform:uppercase;letter-spacing:.08em;}
 .stat-val{font-size:13px;color:rgba(255,255,255,.85);font-weight:500;margin-top:2px;}
-.readiness-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--ff-mono);}
+/* READINESS */
+.readiness-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--ff-mono);}
 .readiness-badge.cold{background:rgba(156,163,175,.2);color:#9ca3af;border:1px solid rgba(156,163,175,.3);}
 .readiness-badge.warm{background:rgba(234,179,8,.18);color:#ca8a04;border:1px solid rgba(234,179,8,.3);}
 .readiness-badge.hot{background:rgba(249,115,22,.18);color:#ea580c;border:1px solid rgba(249,115,22,.3);}
@@ -110,72 +136,78 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
 .readiness-badge.warm .badge-dot{background:#eab308;animation:pulse 1.4s ease-in-out infinite;}
 .readiness-badge.hot .badge-dot{background:#f97316;animation:pulse 1s ease-in-out infinite;}
 .readiness-badge.veryhot .badge-dot{background:#22c55e;animation:pulse .8s ease-in-out infinite;}
-.readiness-tip{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--ff-mono);max-width:220px;line-height:1.4;text-align:right;margin-top:4px;}
+.readiness-tip{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--ff-mono);max-width:210px;line-height:1.4;text-align:right;margin-top:4px;}
+/* LANG BAR */
 .lang-bar{display:none;background:#fffbeb;border-bottom:1px solid #fde68a;padding:10px 16px;align-items:center;gap:12px;}
 .lang-bar.visible{display:flex;}
 .lang-bar span{font-size:12px;color:#92400e;font-weight:500;}
 .lang-btns{display:flex;border:1px solid #fde68a;border-radius:6px;overflow:hidden;}
 .lang-btns button{padding:5px 14px;font-size:12px;font-family:var(--ff-body);font-weight:500;background:transparent;border:none;cursor:pointer;color:#92400e;transition:all .15s;}
 .lang-btns button.active{background:#92400e;color:white;}
-.brief-body{padding:28px 32px;display:grid;gap:24px;}
+/* SECTION BLOCKS */
+.brief-body{padding:24px 32px;display:grid;gap:20px;}
 .section-block{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
-.section-head{background:var(--light);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.section-head{background:var(--light);padding:9px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
 .section-icon{width:24px;height:24px;background:var(--green-light);border-radius:5px;display:grid;place-items:center;flex-shrink:0;}
 .section-icon svg{width:13px;height:13px;stroke:var(--green-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 .section-head h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);flex:1;}
 .regen-btn{width:24px;height:24px;border-radius:5px;border:1px solid var(--border);background:var(--white);display:grid;place-items:center;cursor:pointer;transition:all .15s;flex-shrink:0;}
 .regen-btn:hover{background:var(--green-light);border-color:var(--green);}
 .regen-btn svg{width:11px;height:11px;stroke:var(--mid);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.regen-btn:hover svg{stroke:var(--green-dark);}
 .regen-btn.spinning svg{animation:spin .7s linear infinite;}
-.section-body{padding:16px;}
-.fin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+.section-body{padding:14px 16px;}
+/* FINANCING */
+.fin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px;}
 .fin-grid.two{grid-template-columns:1fr 1fr;}
-.fin-cell{background:var(--light);border-radius:8px;padding:12px 14px;text-align:center;}
+.fin-cell{background:var(--light);border-radius:8px;padding:11px 12px;text-align:center;}
 .fin-cell.accent{background:var(--green-light);}
-.fin-lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;font-family:var(--ff-mono);margin-bottom:4px;}
-.fin-val{font-size:18px;font-weight:600;color:var(--dark);font-family:var(--ff-mono);}
+.fin-cell.warn{background:#fff8eb;border:1px solid #fde68a;}
+.fin-lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;font-family:var(--ff-mono);margin-bottom:3px;}
+.fin-val{font-size:17px;font-weight:600;color:var(--dark);font-family:var(--ff-mono);}
 .fin-cell.accent .fin-val{color:var(--green-dark);}
+.fin-cell.warn .fin-val{color:#92400e;}
 .fin-sub{font-size:10px;color:var(--mid);margin-top:2px;}
-.fin-note{font-size:12px;color:var(--mid);background:var(--light);border-radius:6px;padding:8px 12px;line-height:1.5;}
+.fin-note{font-size:12px;color:var(--mid);background:var(--light);border-radius:6px;padding:7px 11px;line-height:1.5;}
+.fin-alert{font-size:12px;color:#92400e;background:#fff8eb;border:1px solid #fde68a;border-radius:6px;padding:7px 11px;line-height:1.5;margin-bottom:10px;}
+/* AI CONTENT */
 .obj-list{display:grid;gap:10px;}
 .obj-item{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-.obj-head{background:#fff8f0;padding:8px 14px;font-size:12px;font-weight:600;color:#8a4a00;border-bottom:1px solid #fde8cc;display:flex;align-items:center;gap:7px;}
+.obj-head{background:#fff8f0;padding:7px 13px;font-size:12px;font-weight:600;color:#8a4a00;border-bottom:1px solid #fde8cc;display:flex;align-items:center;gap:7px;}
 .obj-num{width:18px;height:18px;background:#f0a050;border-radius:50%;color:white;font-size:10px;font-weight:700;display:grid;place-items:center;flex-shrink:0;font-family:var(--ff-mono);}
-.obj-body{padding:10px 14px;}
-.obj-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:4px;font-family:var(--ff-mono);}
+.obj-body{padding:10px 13px;}
+.obj-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:3px;font-family:var(--ff-mono);}
 .obj-text{font-size:13px;color:var(--dark);line-height:1.6;}
 .resp-block{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);}
 .resp-block .obj-lbl{color:var(--green-dark);}
 .tp-list{display:grid;gap:8px;}
-.tp-item{display:flex;gap:10px;align-items:flex-start;background:var(--light);border-radius:7px;padding:10px 12px;}
+.tp-item{display:flex;gap:9px;align-items:flex-start;background:var(--light);border-radius:7px;padding:9px 11px;}
 .tp-bullet{width:20px;height:20px;background:var(--green);border-radius:50%;display:grid;place-items:center;flex-shrink:0;margin-top:1px;}
 .tp-bullet svg{width:10px;height:10px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;}
 .tp-text{font-size:13px;color:var(--dark);line-height:1.6;flex:1;}
 .tp-copy{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:white;display:grid;place-items:center;cursor:pointer;flex-shrink:0;transition:all .15s;margin-top:1px;}
 .tp-copy:hover{background:var(--green-light);border-color:var(--green);}
 .tp-copy svg{width:12px;height:12px;stroke:var(--mid);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
-.tp-copy:hover svg{stroke:var(--green-dark);}
 .tp-copy.copied{background:var(--green);border-color:var(--green);}
 .tp-copy.copied svg{stroke:white;}
-.water-badge{display:inline-flex;align-items:center;gap:6px;background:#e8f4fb;color:#1a5f8a;border:1px solid #b8d8ef;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:500;margin-bottom:10px;}
-.water-badge svg{width:13px;height:13px;stroke:#1a6fa0;fill:none;stroke-width:2;}
-.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:6px;height:14px;margin-bottom:8px;}
-.stream-ind{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green-dark);font-family:var(--ff-mono);margin-bottom:16px;}
+.water-badge{display:inline-flex;align-items:center;gap:6px;background:#e8f4fb;color:#1a5f8a;border:1px solid #b8d8ef;border-radius:6px;padding:4px 11px;font-size:12px;font-weight:500;margin-bottom:9px;}
+.water-badge svg{width:12px;height:12px;stroke:#1a6fa0;fill:none;stroke-width:2;}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:6px;height:13px;margin-bottom:8px;}
+.stream-ind{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green-dark);font-family:var(--ff-mono);margin-bottom:14px;}
 .stream-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1s ease-in-out infinite;}
-.brief-footer{padding:16px 32px;border-top:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.err-msg{font-size:13px;color:var(--red);padding:6px 0;}
+/* FOOTER */
+.brief-footer{padding:14px 32px;border-top:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;}
 .footer-info{font-size:11px;color:var(--mid);font-family:var(--ff-mono);}
 .footer-info strong{color:var(--dark);}
 .prep-wrap{display:flex;align-items:center;gap:8px;}
 .prep-wrap label{font-size:11px;color:var(--mid);font-family:var(--ff-mono);white-space:nowrap;}
-.prep-select{position:relative;}
-.prep-select select{font-family:var(--ff-mono);font-size:11px;color:var(--dark);border:1px solid var(--border);background:white;border-radius:5px;padding:4px 24px 4px 8px;appearance:none;cursor:pointer;}
-.prep-select-arrow{position:absolute;right:6px;top:50%;transform:translateY(-50%);pointer-events:none;}
+/* KEYFRAMES */
 @keyframes spin{to{transform:rotate(360deg);}}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
 @keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
-@media print{.app-header,.form-panel,.brief-topbar,.brief-actions,.tp-copy,.regen-btn{display:none!important;}.layout{display:block;}.output-panel{padding:0;}.brief{display:block!important;}.brief-card{box-shadow:none;border:1px solid #ccc;}body{background:white;}.brief-footer{display:flex!important;}}
-@media(max-width:960px){.layout{grid-template-columns:1fr;}.form-panel{height:auto;position:static;border-right:none;border-bottom:1px solid var(--border);}.output-panel{padding:20px 16px;}.fin-grid{grid-template-columns:1fr 1fr;}.brief-hero{padding:20px;}.brief-body{padding:20px;}.brief-footer{padding:16px 20px;}.app-header{padding:0 16px;}}
+/* PRINT */
+@media print{.app-header,.form-panel,.brief-topbar,.tp-copy,.regen-btn,.brief-actions{display:none!important;}.layout{display:block;}.output-panel{padding:0;}.brief{display:block!important;}.brief-card{box-shadow:none;}.brief-footer{display:flex!important;}}
+@media(max-width:960px){.layout{grid-template-columns:1fr;}.form-panel{height:auto;position:static;border-right:none;border-bottom:1px solid var(--border);}.output-panel{padding:20px 16px;}.app-header{padding:0 16px;}}
 </style>
 </head>
 <body>
@@ -197,14 +229,20 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
   <!-- FORM PANEL -->
   <div class="form-panel">
     <h2>Buyer Details</h2>
-    <p class="form-sub">Fill in what you know before the tour. The land specialist gets a personalized brief with financing, objections, and talking points.</p>
+    <p class="form-sub">Fill in what you know before the tour and get a personalized AI brief in seconds.</p>
+
+    <!-- BUYER INFO -->
+    <div class="section-divider">
+      <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Buyer Info
+    </div>
 
     <div class="field">
       <label>Buyer Name</label>
       <input type="text" id="f-name" placeholder="e.g. Marcus Rivera">
     </div>
 
-    <div class="field-row" style="margin-bottom:16px;">
+    <div class="field-row">
       <div class="field" style="margin-bottom:0;">
         <label>Lead Source</label>
         <div class="sel-wrap">
@@ -216,7 +254,7 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
             <option value="TikTok">TikTok</option>
             <option value="Walk-in">Walk-in</option>
           </select>
-          <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="sel-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
         </div>
       </div>
       <div class="field" style="margin-bottom:0;">
@@ -226,12 +264,12 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
             <option value="English">English (MWR)</option>
             <option value="Spanish">Spanish (Terrenos)</option>
           </select>
-          <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="sel-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
         </div>
       </div>
     </div>
 
-    <div class="field">
+    <div class="field" style="margin-top:14px;">
       <label>Buyer Type / Persona</label>
       <div class="sel-wrap">
         <select id="f-persona">
@@ -242,33 +280,105 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
           <option value="Sarah">Sarah -- Remote work / Off-grid lifestyle</option>
           <option value="Frank">Frank -- Spanish-speaking buyer</option>
         </select>
-        <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+        <div class="sel-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+      </div>
+    </div>
+
+    <!-- BUYER INSIGHTS -->
+    <div class="section-divider">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+      Buyer Insights
+    </div>
+
+    <div class="field-row">
+      <div class="field" style="margin-bottom:0;">
+        <label>Decision Maker</label>
+        <div class="tg" id="tg-decision">
+          <button class="active" onclick="setToggle('tg-decision',this,'Buyer alone','')">Solo</button>
+          <button onclick="setToggle('tg-decision',this,'Buyer + spouse','')">Spouse</button>
+          <button onclick="setToggle('tg-decision',this,'Buyer + family','')">Family</button>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>Purchase Timeline</label>
+        <div class="sel-wrap">
+          <select id="f-timeline">
+            <option value="Unknown">Unknown</option>
+            <option value="Ready now">Ready now</option>
+            <option value="1-3 months">1-3 months</option>
+            <option value="3-6 months">3-6 months</option>
+            <option value="6-12 months">6-12 months</option>
+            <option value="Just researching">Just researching</option>
+          </select>
+          <div class="sel-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:14px;">
+      <label>Current Housing Situation</label>
+      <div class="sel-wrap">
+        <select id="f-housing">
+          <option value="Unknown">Unknown</option>
+          <option value="Renting">Renting</option>
+          <option value="Homeowner">Homeowner (no land)</option>
+          <option value="Owns land elsewhere">Owns land elsewhere</option>
+          <option value="Living on land">Living on land / rural already</option>
+          <option value="Looking to relocate">Looking to relocate</option>
+        </select>
+        <div class="sel-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
     </div>
 
     <div class="field">
-      <div class="field-lbl">Properties of Interest</div>
-      <p class="field-note">Add specific parcels, or describe what the buyer wants and let the specialist fill in the best fits.</p>
-      <div class="prop-list" id="prop-list"></div>
-      <button class="add-prop-btn" onclick="addProperty()">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Add another property
-      </button>
-    </div>
-
-    <div class="field">
-      <div class="field-lbl">Parcel Availability</div>
-      <div class="tg" id="tg-avail">
-        <button class="active g" onclick="setToggle('tg-avail',this,'Available','g')">Available</button>
-        <button onclick="setToggle('tg-avail',this,'Under Contract','a')">Under Contract</button>
-        <button onclick="setToggle('tg-avail',this,'Last One in Subdivision','r')">Last One</button>
+      <label>Biggest Stated Concern</label>
+      <div class="sel-wrap">
+        <select id="f-concern">
+          <option value="None stated">None stated</option>
+          <option value="Financing / monthly payment">Financing / monthly payment</option>
+          <option value="Road / access">Road / access</option>
+          <option value="Water access">Water access</option>
+          <option value="Zoning / what they can do">Zoning / what they can do</option>
+          <option value="Neighbors / nearby development">Neighbors / nearby development</option>
+          <option value="Resale value">Resale value</option>
+          <option value="Distance from amenities">Distance from amenities</option>
+          <option value="Spouse not yet convinced">Spouse not yet convinced</option>
+        </select>
+        <div class="sel-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
     </div>
 
-    <div class="field-row" style="margin-bottom:16px;">
+    <div class="field">
+      <label>Notes on buyer</label>
+      <textarea id="f-notes" placeholder="e.g. Loves pine trees, wants privacy, mentioned wanting to camp with his family on weekends. Has kids 8 and 12."></textarea>
+    </div>
+
+    <!-- PROPERTY -->
+    <div class="section-divider">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Properties of Interest
+    </div>
+
+    <p class="field-note">Add specific parcels. Price is required for financing. Flags help apply the correct minimum down.</p>
+    <div class="prop-list" id="prop-list"></div>
+    <button class="add-prop-btn" onclick="addProperty()">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add another property
+    </button>
+
+    <!-- FINANCING -->
+    <div class="section-divider" style="margin-top:18px;">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+      Financing
+    </div>
+
+    <div class="field-row">
       <div class="field" style="margin-bottom:0;">
         <label>Estimated Down Payment</label>
-        <input type="number" id="f-down" placeholder="e.g. 3000" min="1000">
+        <div class="price-input-wrap">
+          <span>$</span>
+          <input type="number" id="f-down" placeholder="e.g. 3000" min="0" oninput="updateDownNotice()">
+        </div>
       </div>
       <div class="field" style="margin-bottom:0;">
         <label>Preferred Term</label>
@@ -278,13 +388,28 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
             <option value="10">10 Years</option>
             <option value="15">15 Years</option>
           </select>
-          <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+          <div class="sel-arrow"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
         </div>
       </div>
     </div>
+    <div class="min-down-notice" id="min-down-notice"></div>
 
-    <div class="field-row" style="margin-bottom:16px;">
-      <div>
+    <!-- TOUR -->
+    <div class="section-divider" style="margin-top:18px;">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      Tour Details
+    </div>
+
+    <div class="field-row">
+      <div class="field" style="margin-bottom:0;">
+        <div class="field-lbl">Parcel Availability</div>
+        <div class="tg" id="tg-avail">
+          <button class="active g" onclick="setToggle('tg-avail',this,'Available','g')">Avail.</button>
+          <button onclick="setToggle('tg-avail',this,'Under Contract','a')">Contract</button>
+          <button onclick="setToggle('tg-avail',this,'Last One in Subdivision','r')">Last One</button>
+        </div>
+      </div>
+      <div class="field" style="margin-bottom:0;">
         <div class="field-lbl">Tour Type</div>
         <div class="tg" id="tg-tour">
           <button class="active" onclick="setToggle('tg-tour',this,'In-Person','')">In-Person</button>
@@ -292,19 +417,6 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
           <button onclick="setToggle('tg-tour',this,'Self-Guided','')">Self</button>
         </div>
       </div>
-      <div>
-        <div class="field-lbl">Who's Attending</div>
-        <div class="tg" id="tg-attend">
-          <button class="active" onclick="setToggle('tg-attend',this,'Buyer only','')">Solo</button>
-          <button onclick="setToggle('tg-attend',this,'Buyer + spouse','')">+ Spouse</button>
-          <button onclick="setToggle('tg-attend',this,'Buyer + family','')">Family</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Notes on buyer (optional)</label>
-      <textarea id="f-notes" placeholder="e.g. Has land already, wants more acreage. Spouse very involved in decision."></textarea>
     </div>
 
     <hr class="divider">
@@ -415,13 +527,11 @@ body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-he
           <div class="footer-info" id="out-timestamp"></div>
           <div class="prep-wrap">
             <label for="prep-by">Prepared by:</label>
-            <div class="prep-select" style="position:relative;">
-              <select id="prep-by" style="font-family:var(--ff-mono);font-size:11px;color:var(--dark);border:1px solid var(--border);background:white;border-radius:5px;padding:4px 24px 4px 8px;appearance:none;cursor:pointer;">
+            <div class="sel-wrap" style="min-width:90px;">
+              <select id="prep-by" style="font-family:var(--ff-mono);font-size:11px;padding:4px 26px 4px 8px;">
                 <option>Kelly</option><option>Shay</option><option>Silvia</option>
               </select>
-              <div style="position:absolute;right:6px;top:50%;transform:translateY(-50%);pointer-events:none;">
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-              </div>
+              <div class="sel-arrow" style="right:8px;"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
             </div>
           </div>
         </div>
@@ -456,7 +566,7 @@ var R_TIPS = {
 var lastResult = null;
 var currentLang = 'en';
 var propCount = 0;
-var TV = {'tg-avail':'Available','tg-tour':'In-Person','tg-attend':'Buyer only'};
+var TV = {'tg-avail':'Available','tg-tour':'In-Person','tg-decision':'Buyer alone'};
 
 // ---- DOM HELPERS ----
 function g(id) { return document.getElementById(id); }
@@ -468,288 +578,377 @@ function mk(tag, cls, txt) {
   return e;
 }
 var NS = 'http://www.w3.org/2000/svg';
-function mkSvg(viewBox) {
-  var s = document.createElementNS(NS, 'svg');
-  s.setAttribute('viewBox', viewBox || '0 0 24 24');
-  return s;
-}
-function mkSvgEl(tag, attrs) {
+function mkSvg() { var s = document.createElementNS(NS,'svg'); s.setAttribute('viewBox','0 0 24 24'); return s; }
+function mkSEl(tag, attrs) {
   var e = document.createElementNS(NS, tag);
   Object.keys(attrs).forEach(function(k) { e.setAttribute(k, attrs[k]); });
   return e;
 }
-
-// ---- SVG ICONS ----
-function icoCheck() {
-  var s = mkSvg(); var p = mkSvgEl('polyline', {points:'20 6 9 17 4 12'}); s.appendChild(p); return s;
-}
+function icoCheck() { var s=mkSvg(); s.appendChild(mkSEl('polyline',{points:'20 6 9 17 4 12'})); return s; }
 function icoCopy() {
-  var s = mkSvg();
-  s.appendChild(mkSvgEl('rect', {x:'9',y:'9',width:'13',height:'13',rx:'2'}));
-  s.appendChild(mkSvgEl('path', {d:'M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1'}));
+  var s=mkSvg();
+  s.appendChild(mkSEl('rect',{x:'9',y:'9',width:'13',height:'13',rx:'2'}));
+  s.appendChild(mkSEl('path',{d:'M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1'}));
   return s;
 }
-function icoDroplet() {
-  var s = mkSvg(); s.appendChild(mkSvgEl('path', {d:'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z'})); return s;
+
+// ---- PROPERTY FLAGS ----
+// Each property tracks: hasStructure, hasWell, priceOver100k (auto)
+var propFlags = {};
+
+function getPropFlag(pid, flag) {
+  return propFlags[pid] && propFlags[pid][flag];
+}
+function togglePropFlag(pid, flag, btn) {
+  if (!propFlags[pid]) propFlags[pid] = {};
+  propFlags[pid][flag] = !propFlags[pid][flag];
+  btn.classList.toggle('active', propFlags[pid][flag]);
+  updateDownNotice();
 }
 
 // ---- PROPERTY LIST ----
 window.addProperty = function() {
   propCount++;
   var pid = 'p' + propCount;
+  propFlags[pid] = {hasStructure: false, hasWell: false};
   var list = g('prop-list');
   var idx = list.children.length + 1;
 
-  var wrap = mk('div', 'prop-entry'); wrap.id = pid;
-  var head = mk('div', 'prop-head');
-  head.appendChild(mk('div', 'prop-num', String(idx)));
-  head.appendChild(mk('div', 'prop-lbl', 'Property ' + idx));
+  var wrap = mk('div','prop-entry'); wrap.id = pid;
+
+  // Head
+  var head = mk('div','prop-head');
+  head.appendChild(mk('div','prop-num',String(idx)));
+  head.appendChild(mk('div','prop-lbl','Property '+idx));
   if (idx > 1) {
-    var rm = mk('button', 'prop-rm', '\u00d7');
-    rm.title = 'Remove';
-    (function(p) { rm.onclick = function() { window.removeProp(p); }; })(pid);
+    var rm = mk('button','prop-rm','\u00d7'); rm.title='Remove';
+    (function(p){ rm.onclick = function(){ window.removeProp(p); }; })(pid);
     head.appendChild(rm);
   }
 
-  var body = mk('div', 'prop-body');
-  var srcTg = mk('div', 'prop-src-tg'); srcTg.id = 'src-' + pid;
-  [['details','Enter details'],['url','Paste URL'],['desc','Paste description']].forEach(function(pair, i) {
-    var b = mk('button', i === 0 ? 'active' : '', pair[1]);
-    (function(mode, btn) { btn.onclick = function() { setPropMode(pid, mode, btn); }; })(pair[0], b);
+  // Body
+  var body = mk('div','prop-body');
+
+  // Source toggle
+  var srcTg = mk('div','prop-src-tg'); srcTg.id='src-'+pid;
+  [['details','Enter details'],['url','Paste URL'],['desc','Paste description']].forEach(function(pair,i){
+    var b = mk('button', i===0?'active':'', pair[1]);
+    (function(mode,btn){ btn.onclick=function(){ setPropMode(pid,mode,btn); }; })(pair[0],b);
     srcTg.appendChild(b);
   });
+  body.appendChild(srcTg);
 
+  // Name input
   var nameIn = document.createElement('input');
-  nameIn.type = 'text'; nameIn.id = pid + '-name';
-  nameIn.placeholder = 'Property name or lot number (e.g. Lot 14, Buck Horn Mesa)';
+  nameIn.type='text'; nameIn.id=pid+'-name';
+  nameIn.placeholder='Property name or lot number (e.g. Lot 14, Buck Horn Mesa)';
+  body.appendChild(nameIn);
 
-  var dW = mk('div'); dW.id = pid + '-dW';
+  // Price row (always visible)
+  var priceRow = mk('div','prop-price-row');
+  var priceWrap = mk('div','price-input-wrap');
+  var priceDollar = mk('span','','$');
+  var priceIn = document.createElement('input');
+  priceIn.type='number'; priceIn.id=pid+'-price'; priceIn.min='0';
+  priceIn.placeholder='Price (e.g. 42000)';
+  priceIn.style.cssText='font-size:12px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:7px 7px 7px 18px;width:100%;outline:none;';
+  (function(p){ priceIn.oninput=function(){ updateDownNotice(); }; })(pid);
+  priceWrap.appendChild(priceDollar); priceWrap.appendChild(priceIn);
+
+  var acreWrap = mk('div');
+  var acreIn = document.createElement('input');
+  acreIn.type='text'; acreIn.id=pid+'-acres'; acreIn.placeholder='Acreage (e.g. 5)';
+  acreIn.style.cssText='font-size:12px;background:#fff;border:1px solid var(--border);border-radius:6px;padding:7px 9px;width:100%;outline:none;';
+  acreWrap.appendChild(acreIn);
+
+  priceRow.appendChild(priceWrap); priceRow.appendChild(acreWrap);
+  body.appendChild(priceRow);
+
+  // Details fields
+  var dW = mk('div'); dW.id=pid+'-dW';
   var dIn = document.createElement('input');
-  dIn.type = 'text'; dIn.id = pid + '-det';
-  dIn.placeholder = 'Acreage, price, features (e.g. 5 acres, $42,000, water access)';
+  dIn.type='text'; dIn.id=pid+'-det';
+  dIn.placeholder='Other features (e.g. road access, views, fencing)';
   dW.appendChild(dIn);
+  body.appendChild(dW);
 
-  var uW = mk('div'); uW.id = pid + '-uW'; uW.style.display = 'none';
+  var uW = mk('div'); uW.id=pid+'-uW'; uW.style.display='none';
   var uIn = document.createElement('input');
-  uIn.type = 'url'; uIn.id = pid + '-url';
-  uIn.placeholder = 'https://www.landwatch.com/...';
+  uIn.type='url'; uIn.id=pid+'-url'; uIn.placeholder='https://www.mwranches.com/...';
   uW.appendChild(uIn);
+  body.appendChild(uW);
 
-  var descW = mk('div'); descW.id = pid + '-descW'; descW.style.display = 'none';
+  var descW = mk('div'); descW.id=pid+'-descW'; descW.style.display='none';
   var descTa = document.createElement('textarea');
-  descTa.id = pid + '-desc';
-  descTa.placeholder = 'Paste the full property description here...';
+  descTa.id=pid+'-desc'; descTa.placeholder='Paste the full property description here...';
   descW.appendChild(descTa);
+  body.appendChild(descW);
 
-  body.appendChild(srcTg); body.appendChild(nameIn);
-  body.appendChild(dW); body.appendChild(uW); body.appendChild(descW);
+  // Property flags
+  var flagLbl = mk('div','prop-flag-lbl','Property flags:');
+  body.appendChild(flagLbl);
+  var flags = mk('div','prop-flags');
+  [['hasStructure','Has structure / cabin'],['hasWell','Has water well']].forEach(function(pair){
+    var fb = mk('button','prop-flag-btn', pair[1]);
+    (function(p,f,b){ b.onclick=function(){ togglePropFlag(p,f,b); }; })(pid,pair[0],fb);
+    flags.appendChild(fb);
+  });
+  body.appendChild(flags);
+
   wrap.appendChild(head); wrap.appendChild(body);
   list.appendChild(wrap);
 };
 
 window.removeProp = function(pid) {
-  var e = g(pid); if (e) e.remove();
+  var e = g(pid); if(e) e.remove();
+  delete propFlags[pid];
   renumberProps();
+  updateDownNotice();
 };
 
 function renumberProps() {
-  document.querySelectorAll('#prop-list .prop-entry').forEach(function(entry, i) {
+  document.querySelectorAll('#prop-list .prop-entry').forEach(function(entry,i){
     var n = entry.querySelector('.prop-num');
     var l = entry.querySelector('.prop-lbl');
-    if (n) n.textContent = i + 1;
-    if (l) l.textContent = 'Property ' + (i + 1);
-    if (i === 0) { var rm = entry.querySelector('.prop-rm'); if (rm) rm.remove(); }
+    if(n) n.textContent = i+1;
+    if(l) l.textContent = 'Property '+(i+1);
+    if(i===0){ var rm=entry.querySelector('.prop-rm'); if(rm) rm.remove(); }
   });
 }
 
-function setPropMode(pid, mode, btn) {
-  g('src-' + pid).querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+function setPropMode(pid,mode,btn){
+  g('src-'+pid).querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
-  g(pid + '-dW').style.display = mode === 'details' ? '' : 'none';
-  g(pid + '-uW').style.display = mode === 'url' ? '' : 'none';
-  g(pid + '-descW').style.display = mode === 'desc' ? '' : 'none';
+  g(pid+'-dW').style.display = mode==='details'?'':'none';
+  g(pid+'-uW').style.display = mode==='url'?'':'none';
+  g(pid+'-descW').style.display = mode==='desc'?'':'none';
 }
 
-function collectProps() {
-  var out = [];
-  document.querySelectorAll('#prop-list .prop-entry').forEach(function(entry, i) {
-    var pid = entry.id;
-    var name = (g(pid + '-name') || {}).value || '';
-    var ab = entry.querySelector('.prop-src-tg .active');
-    var mt = ab ? ab.textContent.trim() : 'Enter details';
-    var content = '';
-    if (mt === 'Enter details') content = (g(pid + '-det') || {}).value || '';
-    else if (mt === 'Paste URL') content = (g(pid + '-url') || {}).value || '';
-    else content = (g(pid + '-desc') || {}).value || '';
-    if (name.trim() || content.trim()) {
-      out.push({num: i+1, name: name.trim() || ('Property ' + (i+1)), mode: mt, content: content.trim()});
-    }
+function collectProps(){
+  var out=[];
+  document.querySelectorAll('#prop-list .prop-entry').forEach(function(entry,i){
+    var pid=entry.id;
+    var name=((g(pid+'-name')||{}).value||'').trim();
+    var priceRaw=parseFloat((g(pid+'-price')||{}).value)||0;
+    var acres=((g(pid+'-acres')||{}).value||'').trim();
+    var ab=entry.querySelector('.prop-src-tg .active');
+    var mt=ab?ab.textContent.trim():'Enter details';
+    var content='';
+    if(mt==='Enter details') content=((g(pid+'-det')||{}).value||'').trim();
+    else if(mt==='Paste URL') content=((g(pid+'-url')||{}).value||'').trim();
+    else content=((g(pid+'-desc')||{}).value||'').trim();
+    var flags=propFlags[pid]||{};
+    var needs10Pct = priceRaw>=100000||flags.hasStructure||flags.hasWell;
+    out.push({
+      num:i+1,
+      name:name||('Property '+(i+1)),
+      price:priceRaw,
+      acres:acres,
+      mode:mt,
+      content:content,
+      hasStructure:!!flags.hasStructure,
+      hasWell:!!flags.hasWell,
+      needs10Pct:needs10Pct
+    });
   });
-  return out;
+  return out.filter(function(p){ return p.name||p.price||p.content; });
 }
 
-function propBlock(props) {
-  if (!props.length) return 'No specific properties listed -- use buyer notes to recommend best fits.';
-  return props.map(function(p) {
-    var ml = p.mode === 'Paste URL' ? 'URL' : p.mode === 'Paste description' ? 'Description' : 'Details';
-    return 'Property ' + p.num + ': ' + p.name + '\n  [' + ml + ']: ' + (p.content || 'No additional info provided');
+function propBlockForPrompt(props){
+  if(!props.length) return 'No specific properties listed -- use buyer notes and wishlist to recommend best fits.';
+  return props.map(function(p){
+    var ml=p.mode==='Paste URL'?'URL':p.mode==='Paste description'?'Description':'Details';
+    var lines=['Property '+p.num+': '+p.name];
+    if(p.price) lines.push('  Price: $'+p.price.toLocaleString());
+    if(p.acres) lines.push('  Acreage: '+p.acres+' acres');
+    if(p.hasStructure) lines.push('  Has structure/cabin');
+    if(p.hasWell) lines.push('  Has water well');
+    if(p.needs10Pct) lines.push('  MINIMUM DOWN: 10% required for this property');
+    if(p.content) lines.push('  ['+ml+']: '+p.content);
+    return lines.join('\n');
   }).join('\n\n');
 }
 
-function propNames(props) {
-  var n = props.map(function(p) { return p.name; }).filter(Boolean);
-  return n.length ? n.join(', ') : 'To be matched';
+function propNamesForHero(props){
+  var n=props.map(function(p){ return p.name; }).filter(Boolean);
+  return n.length?n.join(', '):'To be matched';
 }
 
-// ---- TOGGLES ----
-window.setToggle = function(groupId, btn, value, colorClass) {
-  TV[groupId] = value;
-  g(groupId).querySelectorAll('button').forEach(function(b) {
-    b.classList.remove('active', 'g', 'a', 'r');
+// ---- MIN DOWN NOTICE ----
+window.updateDownNotice = function(){
+  var props=collectProps();
+  var down=parseFloat((g('f-down')||{}).value)||0;
+  var notice=g('min-down-notice');
+  if(!notice) return;
+
+  // Find if any property needs 10%
+  var flagged=props.filter(function(p){ return p.needs10Pct&&p.price>0; });
+  if(!flagged.length){
+    notice.className='min-down-notice';
+    return;
+  }
+  var reasons=[];
+  flagged.forEach(function(p){
+    var pReasons=[];
+    if(p.price>=100000) pReasons.push('price over $100K');
+    if(p.hasStructure) pReasons.push('has structure');
+    if(p.hasWell) pReasons.push('has water well');
+    var minDown=Math.ceil(p.price*0.1);
+    reasons.push(p.name+' requires 10% minimum down ($'+minDown.toLocaleString()+') -- '+pReasons.join(', '));
   });
-  btn.classList.add('active');
-  if (colorClass) btn.classList.add(colorClass);
+  notice.textContent='';
+  var strong=mk('strong','','10% Down Required: ');
+  notice.appendChild(strong);
+  notice.appendChild(document.createTextNode(reasons.join('. ')));
+  notice.className='min-down-notice show';
 };
 
-window.onLangChange = function() {
-  if (g('f-lang').value !== 'Spanish') g('lang-bar').classList.remove('visible');
+// ---- TOGGLES ----
+window.setToggle = function(groupId,btn,value,colorClass){
+  TV[groupId]=value;
+  g(groupId).querySelectorAll('button').forEach(function(b){ b.classList.remove('active','g','a','r'); });
+  btn.classList.add('active');
+  if(colorClass) btn.classList.add(colorClass);
+};
+
+window.onLangChange = function(){
+  if(g('f-lang').value!=='Spanish') g('lang-bar').classList.remove('visible');
 };
 
 // ---- READINESS ----
-function computeReadiness() {
-  var src = g('f-source').value;
-  var down = parseFloat(g('f-down').value) || 0;
-  var props = collectProps();
-  var price = null;
-  props.forEach(function(p) {
-    var m = (p.content + ' ' + p.name).match(/\$?([\d,]+)/);
-    if (m && !price) price = parseFloat(m[1].replace(/,/g, ''));
-  });
-  var pct = price ? down / price : 0;
-  var high = ['Referral','LandWatch'].indexOf(src) >= 0;
-  var mid = ['Facebook','Google','TikTok'].indexOf(src) >= 0;
-  if (pct >= 0.1 && high) return 'veryhot';
-  if (pct >= 0.1 && mid) return 'hot';
-  if (pct >= 0.05 || high) return 'warm';
+function computeReadiness(){
+  var src=g('f-source').value;
+  var down=parseFloat(g('f-down').value)||0;
+  var props=collectProps();
+  var price=null;
+  props.forEach(function(p){ if(p.price&&!price) price=p.price; });
+  var pct=price?down/price:0;
+  var high=['Referral','LandWatch'].indexOf(src)>=0;
+  var mid=['Facebook','Google','TikTok'].indexOf(src)>=0;
+  if(pct>=0.1&&high) return 'veryhot';
+  if(pct>=0.1&&mid) return 'hot';
+  if(pct>=0.05||high) return 'warm';
   return 'cold';
 }
 
-function renderReadiness() {
-  var score = computeReadiness();
-  var wrap = clr('out-readiness');
-  var badge = mk('div', 'readiness-badge ' + score);
-  var dot = mk('div', 'badge-dot');
-  badge.appendChild(dot);
-  badge.appendChild(document.createTextNode(' Buyer Readiness: ' + R_LABELS[score]));
+function renderReadiness(){
+  var score=computeReadiness();
+  var wrap=clr('out-readiness');
+  var badge=mk('div','readiness-badge '+score);
+  badge.appendChild(mk('div','badge-dot'));
+  badge.appendChild(document.createTextNode(' Buyer Readiness: '+R_LABELS[score]));
   wrap.appendChild(badge);
-  g('out-readiness-tip').textContent = R_TIPS[score];
+  g('out-readiness-tip').textContent=R_TIPS[score];
 }
 
 // ---- FINANCING ----
-function calcMo(p, d, y) {
-  var loan = p - d; if (loan <= 0) return 0;
-  var r = RATE / 12, n = y * 12;
-  return loan * (r * Math.pow(1+r,n)) / (Math.pow(1+r,n) - 1);
+function calcMo(p,d,y){
+  var loan=p-d; if(loan<=0) return 0;
+  var r=RATE/12,n=y*12;
+  return loan*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);
 }
-function fmtD(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}); }
-function fmtI(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
-function parsePx(str) {
-  var m = (str || '').match(/\$?([\d,]+)/);
-  return m ? parseFloat(m[1].replace(/,/g,'')) : null;
-}
+function fmtD(n){ return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtI(n){ return '$'+Math.round(n).toLocaleString('en-US'); }
 
-function mkFinCell(label, val, sub, accent) {
-  var cell = mk('div', 'fin-cell' + (accent ? ' accent' : ''));
-  cell.appendChild(mk('div', 'fin-lbl', label));
-  cell.appendChild(mk('div', 'fin-val', val));
-  if (sub) cell.appendChild(mk('div', 'fin-sub', sub));
+function mkFinCell(label,val,sub,accent){
+  var cell=mk('div','fin-cell'+(accent?' accent':''));
+  cell.appendChild(mk('div','fin-lbl',label));
+  cell.appendChild(mk('div','fin-val',val));
+  if(sub) cell.appendChild(mk('div','fin-sub',sub));
   return cell;
 }
 
-function renderFinancing(price, down, termPref) {
-  var wrap = clr('out-financing');
-  if (!price || !down) {
-    wrap.appendChild(mk('div', 'fin-note', 'Include a price in a property details field to see the full financing breakdown. Down payment entered: ' + fmtI(down) + '. Minimum down: $1,000. No credit check required.'));
+function renderFinancing(price,down,termPref,needs10Pct,minDown10){
+  var wrap=clr('out-financing');
+  if(!price){
+    wrap.appendChild(mk('div','fin-note','Enter a price in the property section to see the full financing breakdown. Minimum down: $1,000 (or 10% for properties over $100K, with a structure, or with a water well). No credit check required.'));
     return;
   }
-  var remaining = price - down;
-  var g1 = mk('div', 'fin-grid');
-  g1.appendChild(mkFinCell('Purchase Price', fmtI(price)));
-  g1.appendChild(mkFinCell('Down Payment', fmtI(down)));
-  g1.appendChild(mkFinCell('Amount Financed', fmtI(remaining)));
+  // 10% down alert
+  if(needs10Pct){
+    var reqDown=minDown10;
+    var alert=mk('div','fin-alert','10% minimum down required for this property ($'+reqDown.toLocaleString()+') because it is priced over $100K, has a structure, or has a water well. Standard $1,000 minimum does not apply.');
+    wrap.appendChild(alert);
+  }
+  var effectiveDown = Math.max(down, needs10Pct?minDown10:1000);
+  var remaining=price-effectiveDown;
+  var g1=mk('div','fin-grid');
+  g1.appendChild(mkFinCell('Purchase Price',fmtI(price)));
+  g1.appendChild(mkFinCell('Down Payment',fmtI(effectiveDown)));
+  g1.appendChild(mkFinCell('Amount Financed',fmtI(remaining>0?remaining:0)));
   wrap.appendChild(g1);
-  var terms = termPref === 'both' ? [10,15] : [parseInt(termPref)];
-  var g2 = mk('div', 'fin-grid two');
-  terms.forEach(function(yr) {
-    var mo = calcMo(price, down, yr);
-    var total = down + mo * yr * 12;
-    g2.appendChild(mkFinCell(yr + '-Year Term', fmtD(mo) + '/mo', 'Total paid: ' + fmtI(total), true));
+  var terms=termPref==='both'?[10,15]:[parseInt(termPref)];
+  var g2=mk('div','fin-grid two');
+  terms.forEach(function(yr){
+    var mo=calcMo(price,effectiveDown,yr);
+    var total=effectiveDown+mo*yr*12;
+    g2.appendChild(mkFinCell(yr+'-Year Term',fmtD(mo)+'/mo','Total paid: '+fmtI(total),true));
   });
-  if (terms.length === 1) g2.appendChild(mk('div'));
+  if(terms.length===1) g2.appendChild(mk('div'));
   wrap.appendChild(g2);
-  wrap.appendChild(mk('div', 'fin-note', 'No credit check required. $1,000 minimum down. Owner financing through MWR. ' + (down >= 1000 ? "Buyer's down payment qualifies." : 'Minimum $1,000 down required.')));
+  var noteText='No credit check required. '+(needs10Pct?'10% minimum down for this property.':'$1,000 minimum down.')+' Owner financing through MWR. ';
+  noteText += (effectiveDown>=price*0.1&&needs10Pct)?'Down payment meets the 10% requirement.':(effectiveDown>=1000&&!needs10Pct)?'Down payment qualifies.':'Down payment may need to be adjusted.';
+  wrap.appendChild(mk('div','fin-note',noteText));
 }
 
 // ---- SKELETON ----
-function showSkel(id) {
-  var e = clr(id);
-  var ind = mk('div', 'stream-ind');
-  ind.appendChild(mk('span', 'stream-dot'));
+function showSkel(id){
+  var e=clr(id);
+  var ind=mk('div','stream-ind');
+  ind.appendChild(mk('span','stream-dot'));
   ind.appendChild(document.createTextNode(' Generating...'));
   e.appendChild(ind);
-  [90, 75, 82].forEach(function(w) {
-    var sk = mk('div', 'skeleton'); sk.style.width = w + '%'; e.appendChild(sk);
+  [92,78,85,65].forEach(function(w){
+    var sk=mk('div','skeleton'); sk.style.width=w+'%'; e.appendChild(sk);
   });
 }
 
-// ---- GET DATA ----
-function getD(key) {
-  if (!lastResult) return null;
-  if (currentLang === 'es' && lastResult.spanish) return lastResult.spanish[key];
+function getD(key){
+  if(!lastResult) return null;
+  if(currentLang==='es'&&lastResult.spanish) return lastResult.spanish[key];
   return lastResult[key];
 }
 
 // ---- RENDER SECTIONS ----
-function renderParcel() {
-  var e = clr('out-parcel');
-  var facts = getD('parcelFacts') || [];
-  var ul = document.createElement('ul'); ul.style.cssText = 'margin:0 0 0 18px;';
-  facts.forEach(function(f) {
-    var li = mk('li', '', f);
-    li.style.cssText = 'font-size:13px;line-height:1.7;color:#1C1C1C;margin-bottom:5px;';
+function renderParcel(){
+  var e=clr('out-parcel');
+  var facts=getD('parcelFacts')||[];
+  var ul=document.createElement('ul'); ul.style.cssText='margin:0 0 0 18px;';
+  facts.forEach(function(f){
+    var li=mk('li','',f);
+    li.style.cssText='font-size:13px;line-height:1.7;color:#1C1C1C;margin-bottom:5px;';
     ul.appendChild(li);
   });
   e.appendChild(ul);
 }
 
-function renderWater() {
-  var e = clr('out-water');
-  var summary = getD('waterRightsSummary') || '';
-  var badge = mk('div', 'water-badge');
-  var svg = mkSvg(); svg.appendChild(mkSvgEl('path', {d:'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z'}));
+function renderWater(){
+  var e=clr('out-water');
+  var summary=getD('waterRightsSummary')||'';
+  var badge=mk('div','water-badge');
+  var svg=mkSvg(); svg.appendChild(mkSEl('path',{d:'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z'}));
   badge.appendChild(svg);
   badge.appendChild(document.createTextNode(' A5 Agricultural Zone'));
-  var p = mk('p', '', summary);
-  p.style.cssText = 'font-size:13px;line-height:1.7;color:#1C1C1C;margin-top:10px;';
+  var p=mk('p','',summary); p.style.cssText='font-size:13px;line-height:1.7;color:#1C1C1C;margin-top:9px;';
   e.appendChild(badge); e.appendChild(p);
 }
 
-function renderObjections() {
-  var e = clr('out-objections');
-  var objs = getD('objections') || [];
-  var isEs = currentLang === 'es';
-  var list = mk('div', 'obj-list');
-  objs.forEach(function(obj, i) {
-    var item = mk('div', 'obj-item');
-    var head = mk('div', 'obj-head');
-    head.appendChild(mk('div', 'obj-num', String(i+1)));
+function renderObjections(){
+  var e=clr('out-objections');
+  var objs=getD('objections')||[];
+  var isEs=currentLang==='es';
+  var list=mk('div','obj-list');
+  objs.forEach(function(obj,i){
+    var item=mk('div','obj-item');
+    var head=mk('div','obj-head');
+    head.appendChild(mk('div','obj-num',String(i+1)));
     head.appendChild(document.createTextNode(obj.title));
-    var body = mk('div', 'obj-body');
-    body.appendChild(mk('div', 'obj-lbl', isEs ? 'Lo que podrian decir' : 'What they might say'));
-    body.appendChild(mk('div', 'obj-text', obj.objection));
-    var resp = mk('div', 'resp-block');
-    resp.appendChild(mk('div', 'obj-lbl', isEs ? 'Respuesta sugerida' : 'Suggested response'));
-    resp.appendChild(mk('div', 'obj-text', obj.response));
+    var body=mk('div','obj-body');
+    body.appendChild(mk('div','obj-lbl',isEs?'Lo que podrian decir':'What they might say'));
+    body.appendChild(mk('div','obj-text',obj.objection));
+    var resp=mk('div','resp-block');
+    resp.appendChild(mk('div','obj-lbl',isEs?'Respuesta sugerida':'Suggested response'));
+    resp.appendChild(mk('div','obj-text',obj.response));
     body.appendChild(resp);
     item.appendChild(head); item.appendChild(body);
     list.appendChild(item);
@@ -757,275 +956,318 @@ function renderObjections() {
   e.appendChild(list);
 }
 
-function renderTalkingPoints() {
-  var e = clr('out-talking');
-  var points = getD('talkingPoints') || [];
-  var list = mk('div', 'tp-list');
-  points.forEach(function(tp) {
-    var item = mk('div', 'tp-item');
-    var bullet = mk('div', 'tp-bullet');
-    var svgB = mkSvg(); svgB.appendChild(mkSvgEl('polyline', {points:'20 6 9 17 4 12'}));
+function renderTalkingPoints(){
+  var e=clr('out-talking');
+  var points=getD('talkingPoints')||[];
+  var list=mk('div','tp-list');
+  points.forEach(function(tp){
+    var item=mk('div','tp-item');
+    var bullet=mk('div','tp-bullet');
+    var svgB=mkSvg(); svgB.appendChild(mkSEl('polyline',{points:'20 6 9 17 4 12'}));
     bullet.appendChild(svgB);
-    var text = mk('div', 'tp-text', tp);
-    var copyBtn = mk('button', 'tp-copy'); copyBtn.title = 'Copy';
+    var text=mk('div','tp-text',tp);
+    var copyBtn=mk('button','tp-copy'); copyBtn.title='Copy';
     copyBtn.appendChild(icoCopy());
-    (function(tpText, btn) {
-      btn.onclick = function() {
-        navigator.clipboard.writeText(tpText).then(function() {
+    (function(tpText,btn){
+      btn.onclick=function(){
+        navigator.clipboard.writeText(tpText).then(function(){
           btn.classList.add('copied');
-          while (btn.firstChild) btn.removeChild(btn.firstChild);
+          while(btn.firstChild) btn.removeChild(btn.firstChild);
           btn.appendChild(icoCheck());
-          setTimeout(function() {
+          setTimeout(function(){
             btn.classList.remove('copied');
-            while (btn.firstChild) btn.removeChild(btn.firstChild);
+            while(btn.firstChild) btn.removeChild(btn.firstChild);
             btn.appendChild(icoCopy());
-          }, 1800);
+          },1800);
         });
       };
-    })(tp, copyBtn);
+    })(tp,copyBtn);
     item.appendChild(bullet); item.appendChild(text); item.appendChild(copyBtn);
     list.appendChild(item);
   });
   e.appendChild(list);
 }
 
-function renderAll() {
-  renderParcel(); renderWater(); renderObjections(); renderTalkingPoints();
-}
+function renderAll(){ renderParcel(); renderWater(); renderObjections(); renderTalkingPoints(); }
 
-window.switchLang = function(lang) {
-  currentLang = lang;
-  g('lb-en').classList.toggle('active', lang === 'en');
-  g('lb-es').classList.toggle('active', lang === 'es');
-  if (lastResult) renderAll();
+window.switchLang = function(lang){
+  currentLang=lang;
+  g('lb-en').classList.toggle('active',lang==='en');
+  g('lb-es').classList.toggle('active',lang==='es');
+  if(lastResult) renderAll();
 };
 
-// ---- PROMPT ----
-function buildPrompt(sectionOverride) {
-  var name = g('f-name').value.trim();
-  var source = g('f-source').value;
-  var lang = g('f-lang').value;
-  var down = parseFloat(g('f-down').value) || 0;
-  var notes = g('f-notes').value.trim();
-  var persona = g('f-persona').value;
-  var availability = TV['tg-avail'];
-  var tourType = TV['tg-tour'];
-  var attending = TV['tg-attend'];
-  var isSpanish = lang === 'Spanish';
-  var itin = isSpanish ? 'ITIN accepted (no SSN required). ' : '';
-  var props = collectProps();
+// ---- PROMPT BUILDER ----
+function buildPrompt(sectionOverride){
+  var name=g('f-name').value.trim();
+  var source=g('f-source').value;
+  var lang=g('f-lang').value;
+  var down=parseFloat(g('f-down').value)||0;
+  var notes=g('f-notes').value.trim();
+  var persona=g('f-persona').value;
+  var timeline=g('f-timeline').value;
+  var housing=g('f-housing').value;
+  var concern=g('f-concern').value;
+  var decision=TV['tg-decision'];
+  var availability=TV['tg-avail'];
+  var tourType=TV['tg-tour'];
+  var isSpanish=lang==='Spanish';
+  var itin=isSpanish?'ITIN accepted (no SSN required). ':'';
+  var props=collectProps();
 
-  var availCtx = availability === 'Available'
-    ? 'The parcel is currently available.'
-    : availability === 'Under Contract'
-    ? 'This parcel is under contract. Focus on comparable available parcels or waitlist options.'
-    : 'This is the last parcel in this subdivision. Use appropriate urgency and scarcity language.';
+  var availCtx=availability==='Available'?'The parcel is currently available.'
+    :availability==='Under Contract'?'This parcel is under contract. Acknowledge this and pivot to comparable available parcels or waitlist options.'
+    :'This is the last available parcel in this subdivision. Use urgency and scarcity language in talking points.';
 
-  var tourCtx = tourType === 'Virtual'
-    ? 'Virtual tour. Specialist should rely more on descriptions and data, and build rapport remotely.'
-    : tourType === 'Self-Guided'
-    ? 'Self-guided tour. Specialist not on-site. Talking points should work as a printed or texted guide.'
-    : 'In-person tour at the property.';
+  var tourCtx=tourType==='Virtual'?'This is a virtual tour. Pace the conversation differently, rely on descriptions and data, and build rapport remotely.'
+    :tourType==='Self-Guided'?'Self-guided tour only -- the specialist will not be on-site. Format talking points for a printed or texted guide.'
+    :'In-person tour at the property.';
 
-  var attendCtx = attending === 'Buyer + spouse'
-    ? "Buyer's spouse is attending. Include spouse-specific social proof. Both partners need to feel confident."
-    : attending === 'Buyer + family'
-    ? 'Buyer is bringing family. Acknowledge multi-generational appeal, legacy, outdoor experiences for kids.'
-    : 'Only the buyer is attending.';
+  var decisionCtx=decision==='Buyer + spouse'?'Buyer\'s spouse will be at the tour. Address both of them. Include spouse-facing social proof and lifestyle points. Both need to feel confident.'
+    :decision==='Buyer + family'?'Buyer is bringing family. Acknowledge multi-generational appeal, legacy, and outdoor experiences for kids.'
+    :'Only the buyer is attending.';
 
-  var sectionInstr = sectionOverride
-    ? 'Generate ONLY the "' + sectionOverride + '" section. Return the same JSON structure with only that key populated; other keys should be empty arrays or empty strings.'
-    : 'Generate all sections.';
+  var concernCtx=concern==='None stated'?''
+    :'The buyer has specifically mentioned a concern about: '+concern+'. Address this directly in objections and talking points.';
 
-  var spanishSection = isSpanish
-    ? ',\n  "spanish": {\n    "parcelFacts": ["hecho 1","hecho 2","hecho 3","hecho 4"],\n    "waterRightsSummary": "Resumen sobre derechos de agua A5 en Duchesne County...",\n    "objections": [{"title":"Etiqueta","objection":"Lo que podria decir el comprador","response":"Respuesta del especialista"},{"title":"Etiqueta","objection":"Segunda objecion","response":"Respuesta"},{"title":"Etiqueta","objection":"Tercera objecion","response":"Respuesta"}],\n    "talkingPoints": ["Punto 1 -- mencione que ITIN es aceptado","Punto 2","Punto 3","Punto 4","Punto 5"]\n  }'
-    : '';
+  var timelineCtx=timeline==='Unknown'?'Timeline unknown -- do not assume urgency or lack of it.'
+    :timeline==='Ready now'?'Buyer is ready to buy now. Move toward close confidently.'
+    :timeline==='Just researching'?'Buyer is early in research mode. Focus on education and trust-building, not hard closing.'
+    :'Buyer is targeting a purchase within '+timeline+'. Match urgency to this window.';
 
-  return 'You are preparing a pre-tour buyer prep kit for a land specialist at Mountains West Ranches (MWR) in Duchesne County, Utah. MWR sells A5-zoned agricultural parcels with owner financing (no credit check, $1,000 min down, 10 or 15-year terms at 9.9% interest). ' + itin + '\n\n'
-    + 'Buyer: ' + name + '\nLead source: ' + source + '\nLanguage track: ' + lang + '\nDown payment: $' + down.toLocaleString() + '\nBuyer persona: ' + persona + '\nParcel availability: ' + availability + '\nTour type: ' + tourType + '\nWho is attending: ' + attending + '\n'
-    + (notes ? 'Additional notes: ' + notes + '\n' : '')
-    + '\nPROPERTIES OF INTEREST:\n' + propBlock(props)
-    + '\n\nPERSONA CONTEXT:\n' + (PERSONA[persona] || PERSONA.Unknown)
-    + '\n\nAVAILABILITY CONTEXT: ' + availCtx
-    + '\nTOUR CONTEXT: ' + tourCtx
-    + '\nATTENDING CONTEXT: ' + attendCtx
-    + '\n\n' + sectionInstr
-    + '\n\nReturn ONLY valid JSON with exactly these keys. No markdown, no preamble, no em dashes anywhere:\n\n'
-    + '{\n  "parcelFacts": ["fact 1 -- specific and useful for the land specialist on tour","fact 2","fact 3","fact 4"],\n'
-    + '  "waterRightsSummary": "2-3 sentences about water rights for A5-zoned parcels in Duchesne County. Cover stock water rights, culinary water access, and what buyers should know.",\n'
-    + '  "objections": [\n    {"title":"Short label","objection":"Likely buyer concern based on lead source AND persona","response":"Land specialist response -- warm, confident, factual. 2-3 sentences. No em dashes."},\n    {"title":"Short label","objection":"Second concern","response":"Response"},\n    {"title":"Short label","objection":"Third concern","response":"Response"}\n  ],\n'
-    + '  "talkingPoints": ["Point 1 tailored to persona, source, tour type, and who is attending","Point 2","Point 3","Point 4","Point 5"]'
-    + spanishSection
-    + '\n}\n\n'
-    + 'Rules:\n- No em dashes -- use commas, colons, or periods instead\n'
-    + '- ' + (isSpanish ? 'Spanish section must include ITIN accepted language and be fully in Spanish. English section must NOT include ITIN references.' : 'English only. Never reference ITIN or SSN.') + '\n'
-    + '- Objections must reflect BOTH the lead source behavior AND the persona motivations\n'
-    + '- Reference specific property names/details where possible\n'
-    + '- Talking points must build rapport and move toward a close -- not just describe land\n'
-    + (availability !== 'Available' ? '- Reflect the availability status in talking points.\n' : '')
-    + (tourType === 'Virtual' ? '- Include virtual-specific pacing notes in talking points.\n' : '')
-    + (attending === 'Buyer + spouse' ? '- At least one talking point should address the spouse.\n' : '')
-    + '- No generic filler -- every sentence must be immediately useful on tour';
+  var housingCtx=housing==='Unknown'?''
+    :housing==='Owns land elsewhere'?'Buyer already owns land somewhere. They know what land ownership involves. Speak to them as an experienced land buyer.'
+    :housing==='Renting'?'Buyer is currently renting. Land ownership may feel like a big leap. Emphasize financing accessibility and monthly payment comparison.'
+    :housing==='Homeowner'?'Buyer owns a home but no land. They understand property ownership. Emphasize land as a complement to their existing asset.'
+    :'Buyer situation: '+housing+'.';
+
+  var sectionInstr=sectionOverride
+    ?'Generate ONLY the "'+sectionOverride+'" section. Return the same JSON structure with only that key populated; all other keys should be empty arrays or empty strings.'
+    :'Generate all sections.';
+
+  var spanishSection=isSpanish
+    ?',\n  "spanish": {\n    "parcelFacts": ["hecho 1","hecho 2","hecho 3","hecho 4"],\n    "waterRightsSummary": "Resumen sobre derechos de agua A5 en el condado de Duchesne...",\n    "objections": [{"title":"Etiqueta","objection":"Lo que podria decir el comprador","response":"Respuesta del especialista"},{"title":"Etiqueta","objection":"Segunda objecion","response":"Respuesta"},{"title":"Etiqueta","objection":"Tercera objecion","response":"Respuesta"}],\n    "talkingPoints": ["Punto 1 -- mencione que ITIN es aceptado","Punto 2","Punto 3","Punto 4","Punto 5"]\n  }'
+    :'';
+
+  var prompt='You are preparing a pre-tour buyer prep kit for a land specialist at Mountains West Ranches (MWR) in Duchesne County, Utah. MWR sells A5-zoned agricultural parcels with owner financing (no credit check, $1,000 minimum down for standard parcels, 10% minimum down for parcels over $100,000 or with a structure or water well, 10 or 15-year terms at 9.9% interest). '+itin+'\n\n';
+  prompt+='BUYER: '+name+'\n';
+  prompt+='Lead source: '+source+'\n';
+  prompt+='Language track: '+lang+'\n';
+  prompt+='Down payment offered: $'+down.toLocaleString()+'\n';
+  prompt+='Buyer persona: '+persona+'\n';
+  prompt+='Decision maker(s): '+decision+'\n';
+  prompt+='Purchase timeline: '+timeline+'\n';
+  prompt+='Current housing situation: '+housing+'\n';
+  prompt+='Biggest stated concern: '+concern+'\n';
+  if(notes) prompt+='Additional notes: '+notes+'\n';
+  prompt+='\nPROPERTIES OF INTEREST:\n'+propBlockForPrompt(props)+'\n';
+  prompt+='\nCONTEXT FOR SPECIALIST:\n';
+  prompt+='PERSONA: '+(PERSONA[persona]||PERSONA.Unknown)+'\n';
+  prompt+='AVAILABILITY: '+availCtx+'\n';
+  prompt+='TOUR FORMAT: '+tourCtx+'\n';
+  prompt+='DECISION MAKING: '+decisionCtx+'\n';
+  prompt+='TIMELINE: '+timelineCtx+'\n';
+  if(housingCtx) prompt+='HOUSING BACKGROUND: '+housingCtx+'\n';
+  if(concernCtx) prompt+='KEY CONCERN: '+concernCtx+'\n';
+  prompt+='\n'+sectionInstr+'\n\n';
+  prompt+='Return ONLY valid JSON with exactly these keys. No markdown, no preamble, no em dashes anywhere in the output:\n\n';
+  prompt+='{\n';
+  prompt+='  "parcelFacts": ["fact 1 -- specific, useful, relevant to these properties and to '+persona+' persona","fact 2","fact 3","fact 4"],\n';
+  prompt+='  "waterRightsSummary": "2-3 sentences about water rights for A5-zoned parcels in Duchesne County. Cover stock water, culinary access considerations, and what buyers should know. If property has a well, mention it specifically.",\n';
+  prompt+='  "objections": [\n';
+  prompt+='    {"title":"Short label","objection":"The most likely concern from a '+source+' lead with '+persona+' persona -- especially around: '+concern+'","response":"Specialist response -- warm, confident, factual. 2-3 sentences max. No em dashes."},\n';
+  prompt+='    {"title":"Short label","objection":"Second likely concern","response":"Response"},\n';
+  prompt+='    {"title":"Short label","objection":"Third likely concern","response":"Response"}\n';
+  prompt+='  ],\n';
+  prompt+='  "talkingPoints": ["Point 1 -- address the '+decision+' dynamic and the '+concern+' concern","Point 2 -- relevant to '+persona+' persona and '+timeline+' timeline","Point 3","Point 4","Point 5"]'+spanishSection+'\n';
+  prompt+='}\n\n';
+  prompt+='Rules:\n';
+  prompt+='- No em dashes -- use commas, colons, or periods instead\n';
+  prompt+='- '+(isSpanish?'Spanish section must include ITIN accepted language and be fully in Spanish. English section must NOT reference ITIN or SSN.':'English only. Never reference ITIN or SSN.')+'\n';
+  prompt+='- Objections must directly reflect the lead source behavior, persona motivations, AND the stated concern\n';
+  prompt+='- Reference specific property names and details in facts and talking points where possible\n';
+  prompt+='- Talking points must help build rapport and move toward close -- not just describe the land\n';
+  prompt+='- Every sentence must be immediately useful on tour -- no generic filler\n';
+  if(availability!=='Available') prompt+='- Reflect the "'+availability+'" status in talking points\n';
+  if(tourType==='Virtual') prompt+='- Include virtual-tour-specific pacing and rapport notes\n';
+  if(decision==='Buyer + spouse') prompt+='- At least one talking point must address the spouse directly\n';
+
+  return prompt;
 }
 
 // ---- REGEN SECTION ----
-window.regenSection = async function(sectionKey, outId, btnId) {
-  if (!lastResult) return;
-  var btn = g(btnId);
-  btn.classList.add('spinning');
-  showSkel(outId);
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:buildPrompt(sectionKey)}]})
+window.regenSection = async function(sectionKey,outId,btnId){
+  if(!lastResult) return;
+  var btn=g(btnId); btn.classList.add('spinning'); showSkel(outId);
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:buildPrompt(sectionKey)}]})
     });
-    var data = await res.json();
-    var rawBlock = (data.content || []).find(function(b) { return b.type === 'text'; });
-    var fresh = JSON.parse((rawBlock ? rawBlock.text : '').replace(/```json|```/g,'').trim());
-    if (sectionKey === 'parcelFacts' && fresh.parcelFacts && fresh.parcelFacts.length) {
-      lastResult.parcelFacts = fresh.parcelFacts;
-      if (fresh.spanish && lastResult.spanish) lastResult.spanish.parcelFacts = fresh.spanish.parcelFacts || lastResult.spanish.parcelFacts;
+    var data=await res.json();
+    if(data.error){ throw new Error(data.error.message||'API error'); }
+    var rawBlock=(data.content||[]).find(function(b){ return b.type==='text'; });
+    var fresh=JSON.parse((rawBlock?rawBlock.text:'').replace(/```json|```/g,'').trim());
+    if(sectionKey==='parcelFacts'&&fresh.parcelFacts&&fresh.parcelFacts.length){
+      lastResult.parcelFacts=fresh.parcelFacts;
+      if(fresh.spanish&&lastResult.spanish) lastResult.spanish.parcelFacts=fresh.spanish.parcelFacts||lastResult.spanish.parcelFacts;
     }
-    if (sectionKey === 'waterRightsSummary' && fresh.waterRightsSummary) {
-      lastResult.waterRightsSummary = fresh.waterRightsSummary;
-      if (fresh.spanish && lastResult.spanish) lastResult.spanish.waterRightsSummary = fresh.spanish.waterRightsSummary || lastResult.spanish.waterRightsSummary;
+    if(sectionKey==='waterRightsSummary'&&fresh.waterRightsSummary){
+      lastResult.waterRightsSummary=fresh.waterRightsSummary;
+      if(fresh.spanish&&lastResult.spanish) lastResult.spanish.waterRightsSummary=fresh.spanish.waterRightsSummary||lastResult.spanish.waterRightsSummary;
     }
-    if (sectionKey === 'objections' && fresh.objections && fresh.objections.length) {
-      lastResult.objections = fresh.objections;
-      if (fresh.spanish && lastResult.spanish) lastResult.spanish.objections = fresh.spanish.objections || lastResult.spanish.objections;
+    if(sectionKey==='objections'&&fresh.objections&&fresh.objections.length){
+      lastResult.objections=fresh.objections;
+      if(fresh.spanish&&lastResult.spanish) lastResult.spanish.objections=fresh.spanish.objections||lastResult.spanish.objections;
     }
-    if (sectionKey === 'talkingPoints' && fresh.talkingPoints && fresh.talkingPoints.length) {
-      lastResult.talkingPoints = fresh.talkingPoints;
-      if (fresh.spanish && lastResult.spanish) lastResult.spanish.talkingPoints = fresh.spanish.talkingPoints || lastResult.spanish.talkingPoints;
+    if(sectionKey==='talkingPoints'&&fresh.talkingPoints&&fresh.talkingPoints.length){
+      lastResult.talkingPoints=fresh.talkingPoints;
+      if(fresh.spanish&&lastResult.spanish) lastResult.spanish.talkingPoints=fresh.spanish.talkingPoints||lastResult.spanish.talkingPoints;
     }
-    if (sectionKey === 'parcelFacts') renderParcel();
-    else if (sectionKey === 'waterRightsSummary') renderWater();
-    else if (sectionKey === 'objections') renderObjections();
-    else if (sectionKey === 'talkingPoints') renderTalkingPoints();
-  } catch(err) {
-    var errEl = clr(outId);
-    var msg = mk('div', '', 'Error regenerating. Please try again.');
-    msg.style.cssText = 'color:#c0392b;font-size:13px;padding:8px 0;';
-    errEl.appendChild(msg);
+    if(sectionKey==='parcelFacts') renderParcel();
+    else if(sectionKey==='waterRightsSummary') renderWater();
+    else if(sectionKey==='objections') renderObjections();
+    else if(sectionKey==='talkingPoints') renderTalkingPoints();
+  }catch(err){
+    var errEl=clr(outId);
+    errEl.appendChild(mk('div','err-msg','Error regenerating: '+err.message+'. If running locally, host on Netlify or a server.'));
     console.error(err);
   }
   btn.classList.remove('spinning');
 };
 
 // ---- MAIN GENERATE ----
-window.generateBrief = async function() {
-  var name = g('f-name').value.trim();
-  var source = g('f-source').value;
-  var lang = g('f-lang').value;
-  var down = parseFloat(g('f-down').value) || 0;
-  var termPref = g('f-term').value;
-  var persona = g('f-persona').value;
-  var availability = TV['tg-avail'];
-  var tourType = TV['tg-tour'];
-  var attending = TV['tg-attend'];
-  var isSpanish = lang === 'Spanish';
-  var props = collectProps();
+window.generateBrief = async function(){
+  var name=g('f-name').value.trim();
+  var source=g('f-source').value;
+  var lang=g('f-lang').value;
+  var down=parseFloat(g('f-down').value)||0;
+  var termPref=g('f-term').value;
+  var persona=g('f-persona').value;
+  var availability=TV['tg-avail'];
+  var tourType=TV['tg-tour'];
+  var decision=TV['tg-decision'];
+  var isSpanish=lang==='Spanish';
+  var props=collectProps();
 
-  if (!name) { alert('Please enter the buyer name.'); return; }
-  if (down < 1000) { alert('Minimum down payment is $1,000.'); return; }
+  if(!name){ alert('Please enter the buyer name.'); return; }
 
-  var btn = g('gen-btn');
-  btn.disabled = true;
-  btn.classList.add('loading');
-  g('gen-btn-text').textContent = 'Generating...';
+  // Check min down requirement
+  var needs10Pct=false;
+  var minDown10=1000;
+  var firstPrice=0;
+  props.forEach(function(p){
+    if(p.price&&!firstPrice){ firstPrice=p.price; }
+    if(p.needs10Pct&&p.price){ needs10Pct=true; minDown10=Math.max(minDown10,Math.ceil(p.price*0.1)); }
+  });
+  var effectiveMinDown=needs10Pct?minDown10:1000;
+  if(down<effectiveMinDown&&down>0){
+    // Just warn, don't block -- specialist may not have final down yet
+  }
+  if(down===0&&effectiveMinDown>0){
+    // ok to proceed with $0 down for display purposes
+  }
 
-  g('empty-state').style.display = 'none';
+  var btn=g('gen-btn');
+  btn.disabled=true; btn.classList.add('loading');
+  g('gen-btn-text').textContent='Generating...';
+
+  g('empty-state').style.display='none';
   g('brief-output').classList.add('visible');
-
-  currentLang = 'en';
-  g('lb-en').classList.add('active');
-  g('lb-es').classList.remove('active');
-  if (isSpanish) g('lang-bar').classList.add('visible');
+  currentLang='en';
+  g('lb-en').classList.add('active'); g('lb-es').classList.remove('active');
+  if(isSpanish) g('lang-bar').classList.add('visible');
   else g('lang-bar').classList.remove('visible');
 
-  g('brief-title').textContent = 'Prep Kit -- ' + name;
-  g('out-name').textContent = name;
-
-  // Chips
-  var chipsEl = clr('out-chips');
-  [lang, source, persona !== 'Unknown' ? persona : null, tourType].filter(Boolean).forEach(function(c) {
-    var span = mk('span', 'chip' + (c === lang && isSpanish ? ' hi' : ''), c);
-    chipsEl.appendChild(span);
+  // Hero
+  g('brief-title').textContent='Prep Kit -- '+name;
+  g('out-name').textContent=name;
+  var chipsEl=clr('out-chips');
+  [lang,source,persona!=='Unknown'?persona:null,tourType].filter(Boolean).forEach(function(c){
+    chipsEl.appendChild(mk('span','chip'+(c===lang&&isSpanish?' hi':''),c));
   });
-  var aClass = availability === 'Available' ? 'avail-ok' : availability === 'Under Contract' ? 'avail-uc' : 'avail-last';
-  var aDotColor = availability === 'Available' ? '#759A7A' : availability === 'Under Contract' ? '#eab308' : '#dc2626';
-  var aSpan = mk('span', 'chip ' + aClass);
-  var aDot = mk('span', 'avail-dot'); aDot.style.background = aDotColor;
+  var aClass=availability==='Available'?'avail-ok':availability==='Under Contract'?'avail-uc':'avail-last';
+  var aDotColor=availability==='Available'?'#759A7A':availability==='Under Contract'?'#eab308':'#dc2626';
+  var aSpan=mk('span','chip '+aClass);
+  var aDot=mk('span','avail-dot'); aDot.style.background=aDotColor;
   aSpan.appendChild(aDot); aSpan.appendChild(document.createTextNode(availability));
   chipsEl.appendChild(aSpan);
 
   // Stats
-  var statsEl = clr('out-stats');
-  [['Properties', propNames(props)], ['Down Payment', '$' + down.toLocaleString()], ['Attending', attending]].forEach(function(pair) {
-    var div = mk('div');
-    div.appendChild(mk('div', 'stat-label', pair[0]));
-    div.appendChild(mk('div', 'stat-val', pair[1]));
+  var statsEl=clr('out-stats');
+  var statData=[
+    ['Properties',propNamesForHero(props)],
+    ['Down',down>0?'$'+down.toLocaleString():'TBD'],
+    ['Attending',decision],
+    ['Timeline',g('f-timeline').value]
+  ];
+  statData.forEach(function(pair){
+    var div=mk('div','stat-item');
+    div.appendChild(mk('div','stat-label',pair[0]));
+    div.appendChild(mk('div','stat-val',pair[1]));
     statsEl.appendChild(div);
   });
 
   renderReadiness();
-
-  var priceGuess = null;
-  props.forEach(function(p) { if (!priceGuess) priceGuess = parsePx(p.content) || parsePx(p.name); });
-  renderFinancing(priceGuess, down, termPref);
-
+  renderFinancing(firstPrice,down,termPref,needs10Pct,minDown10);
   ['out-parcel','out-water','out-objections','out-talking'].forEach(showSkel);
 
-  var now = new Date();
-  var tsEl = clr('out-timestamp');
+  // Timestamp
+  var now=new Date();
+  var tsEl=clr('out-timestamp');
   tsEl.appendChild(document.createTextNode('Generated '));
-  var strong = mk('strong', '', now.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}));
-  tsEl.appendChild(strong);
-  tsEl.appendChild(document.createTextNode(' at ' + now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit'})));
+  tsEl.appendChild(mk('strong','',now.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})));
+  tsEl.appendChild(document.createTextNode(' at '+now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})));
 
-  try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:isSpanish?2200:1600,messages:[{role:'user',content:buildPrompt(null)}]})
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:isSpanish?2200:1600,messages:[{role:'user',content:buildPrompt(null)}]})
     });
-    var data = await res.json();
-    var rawBlock = (data.content || []).find(function(b) { return b.type === 'text'; });
-    lastResult = JSON.parse((rawBlock ? rawBlock.text : '').replace(/```json|```/g,'').trim());
+    var data=await res.json();
+    if(data.error){ throw new Error(data.error.message||'API error'); }
+    var rawBlock=(data.content||[]).find(function(b){ return b.type==='text'; });
+    var rawText=rawBlock?rawBlock.text:'';
+    lastResult=JSON.parse(rawText.replace(/```json|```/g,'').trim());
     renderAll();
-  } catch(err) {
-    ['out-parcel','out-water','out-objections','out-talking'].forEach(function(id) {
-      var e = clr(id);
-      var msg = mk('div', '', 'Error generating content. Please try again.');
-      msg.style.cssText = 'color:#c0392b;font-size:13px;padding:8px 0;';
-      e.appendChild(msg);
+  }catch(err){
+    var errMsg='Error: '+err.message+'. ';
+    if(err.message.toLowerCase().indexOf('cors')>=0||err.message.toLowerCase().indexOf('network')>=0||err.message.toLowerCase().indexOf('failed to fetch')>=0){
+      errMsg+='This tool must be hosted on a server (Netlify, Webflow, etc.) to call the API. It cannot run from a local file.';
+    }
+    ['out-parcel','out-water','out-objections','out-talking'].forEach(function(id){
+      var e=clr(id);
+      e.appendChild(mk('div','err-msg',errMsg));
     });
     console.error(err);
   }
 
-  btn.disabled = false;
-  btn.classList.remove('loading');
-  g('gen-btn-text').textContent = 'Generate Prep Kit';
+  btn.disabled=false; btn.classList.remove('loading');
+  g('gen-btn-text').textContent='Generate Prep Kit';
 };
 
 // ---- RESET ----
-window.resetForm = function() {
-  g('f-name').value = ''; g('f-down').value = ''; g('f-notes').value = '';
-  g('f-persona').value = 'Unknown'; g('f-lang').value = 'English'; g('f-source').value = 'Facebook';
-  ['tg-avail','tg-tour','tg-attend'].forEach(function(id) {
-    g(id).querySelectorAll('button').forEach(function(b, i) {
+window.resetForm = function(){
+  g('f-name').value=''; g('f-down').value=''; g('f-notes').value='';
+  g('f-persona').value='Unknown'; g('f-lang').value='English';
+  g('f-source').value='Facebook'; g('f-timeline').value='Unknown';
+  g('f-housing').value='Unknown'; g('f-concern').value='None stated';
+  ['tg-avail','tg-tour','tg-decision'].forEach(function(id){
+    g(id).querySelectorAll('button').forEach(function(b,i){
       b.classList.remove('active','g','a','r');
-      if (i === 0) { b.classList.add('active'); if (id === 'tg-avail') b.classList.add('g'); }
+      if(i===0){ b.classList.add('active'); if(id==='tg-avail') b.classList.add('g'); }
     });
-    TV[id] = id === 'tg-avail' ? 'Available' : id === 'tg-tour' ? 'In-Person' : 'Buyer only';
+    TV[id]=id==='tg-avail'?'Available':id==='tg-tour'?'In-Person':'Buyer alone';
   });
-  var pl = clr('prop-list'); propCount = 0;
+  var pl=clr('prop-list'); propCount=0; propFlags={};
   window.addProperty();
-  lastResult = null; currentLang = 'en';
+  lastResult=null; currentLang='en';
   g('lang-bar').classList.remove('visible');
   g('brief-output').classList.remove('visible');
-  g('empty-state').style.display = '';
+  g('empty-state').style.display='';
+  g('min-down-notice').className='min-down-notice';
 };
 
 // ---- INIT ----
