@@ -1,803 +1,1037 @@
-import { useState, useCallback, useRef } from "react";
-
-const INTEREST_RATE = 0.099;
-
-const PERSONA_CONTEXT = {
-  Dave: "Dave is a self-sufficient homesteader. He cares about acreage utility, water access, fencing, zoning flexibility, and long-term self-reliance. He may object to anything that feels like HOA control or government restriction. Lead with what he can DO on the land.",
-  Jim: "Jim is a retirement or investment buyer. He cares about asset appreciation, low-hassle ownership, and whether this land holds or grows in value. He may compare to 401k or other investments. Lead with land as a tangible, appreciating asset.",
-  Ryan: "Ryan is a hunter or recreation buyer. He cares about hunting, ATV access, wildlife, proximity to public land, and seasonality. He may already own land elsewhere. Lead with recreational access and lifestyle, not agriculture.",
-  Sarah: "Sarah is a remote-work or off-grid lifestyle buyer. She cares about internet access (or Starlink feasibility), building a cabin or tiny home, solar viability, and escaping suburban life. She may bring a partner. Lead with vision and possibility.",
-  Frank: "Frank is a Spanish-speaking buyer. He cares about being understood and respected. He may be unfamiliar with land buying in Utah, and ITIN financing is a key differentiator. Lead with trust, simplicity, and community connection.",
-  Unknown: "Buyer persona is unknown. Use context clues from the lead source and notes to infer motivations.",
-};
-
-const READINESS_LABELS = { cold: "Cold", warm: "Warm", hot: "Hot", veryhot: "Very Hot" };
-const READINESS_TIPS = {
-  cold: "Low down and lower-intent source. Focus on building value and financing ease.",
-  warm: "Moderate signals. Lead with the monthly payment story and owner financing simplicity.",
-  hot: "Strong down or high-intent source. Move toward urgency and close.",
-  veryhot: "High down + high-intent source. This buyer is ready. Prioritize decision-making support.",
-};
-const READINESS_COLORS = {
-  cold: { bg: "rgba(156,163,175,0.2)", color: "#9ca3af", border: "rgba(156,163,175,0.3)", dot: "#9ca3af" },
-  warm: { bg: "rgba(234,179,8,0.18)", color: "#ca8a04", border: "rgba(234,179,8,0.3)", dot: "#eab308" },
-  hot: { bg: "rgba(249,115,22,0.18)", color: "#ea580c", border: "rgba(249,115,22,0.3)", dot: "#f97316" },
-  veryhot: { bg: "rgba(34,197,94,0.18)", color: "#16a34a", border: "rgba(34,197,94,0.3)", dot: "#22c55e" },
-};
-
-function calcMonthly(p, d, y) {
-  const loan = p - d;
-  if (loan <= 0) return 0;
-  const r = INTEREST_RATE / 12, n = y * 12;
-  return loan * (r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MWR Pre-Tour Buyer Prep Kit</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --green:#759A7A;--green-light:#eaf1eb;--green-dark:#4d6e52;
+  --dark:#1C1C1C;--dark2:#252525;--mid:#666;--light:#F1F1F1;
+  --white:#fff;--border:#e2e2e2;
+  --ff-display:'Playfair Display',Georgia,serif;
+  --ff-body:'IBM Plex Sans',sans-serif;
+  --ff-mono:'IBM Plex Mono',monospace;
 }
-function fmtD(n) { return "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-function fmtI(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
-function parsePrice(str) {
-  const m = str?.match(/\$?([\d,]+)/);
-  return m ? parseFloat(m[1].replace(/,/g, "")) : null;
-}
+body{font-family:var(--ff-body);background:var(--light);color:var(--dark);min-height:100vh;}
+.app-header{background:var(--dark);padding:0 36px;display:flex;align-items:center;justify-content:space-between;height:60px;border-bottom:2px solid var(--green);position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-mark{width:32px;height:32px;background:var(--green);border-radius:6px;display:grid;place-items:center;}
+.brand-mark svg{width:18px;height:18px;fill:white;}
+.brand-name{font-family:var(--ff-display);font-size:16px;color:white;}
+.brand-sub{font-size:11px;color:#777;font-family:var(--ff-mono);margin-top:1px;}
+.team-badge{background:var(--green);color:white;font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px;font-family:var(--ff-mono);}
+.layout{display:grid;grid-template-columns:390px 1fr;min-height:calc(100vh - 60px);}
+.form-panel{background:var(--white);border-right:1px solid var(--border);padding:28px 24px;overflow-y:auto;height:calc(100vh - 60px);position:sticky;top:60px;}
+.form-panel h2{font-family:var(--ff-display);font-size:20px;color:var(--dark);margin-bottom:4px;}
+.form-sub{font-size:12px;color:var(--mid);margin-bottom:24px;line-height:1.5;}
+.field{margin-bottom:16px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.field label,.field-lbl{display:block;font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;font-family:var(--ff-body);font-size:13px;color:var(--dark);background:var(--light);border:1px solid var(--border);border-radius:8px;padding:10px 12px;outline:none;transition:border-color .15s,background .15s;appearance:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--green);background:var(--white);}
+.field textarea{height:72px;resize:vertical;}
+.sel-wrap{position:relative;}
+.sel-wrap select{width:100%;font-family:var(--ff-body);font-size:13px;color:var(--dark);background:var(--light);border:1px solid var(--border);border-radius:8px;padding:10px 32px 10px 12px;outline:none;appearance:none;cursor:pointer;transition:border-color .15s,background .15s;}
+.sel-wrap select:focus{border-color:var(--green);background:var(--white);}
+.sel-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none;}
+.field-note{font-size:11px;color:var(--mid);font-style:italic;line-height:1.5;margin-bottom:8px;}
+.divider{border:none;border-top:1px solid var(--border);margin:20px 0;}
+.tg{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.tg button{flex:1;padding:9px 6px;font-family:var(--ff-body);font-size:12px;font-weight:500;background:var(--light);border:none;border-right:1px solid var(--border);cursor:pointer;color:var(--mid);transition:all .15s;line-height:1.3;}
+.tg button:last-child{border-right:none;}
+.tg button.active{background:var(--dark);color:white;}
+.tg button.active.g{background:var(--green);}
+.tg button.active.a{background:#d97706;}
+.tg button.active.r{background:#dc2626;}
+.prop-list{display:grid;gap:10px;}
+.prop-entry{border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--light);}
+.prop-head{display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--white);border-bottom:1px solid var(--border);}
+.prop-num{width:18px;height:18px;background:var(--green);border-radius:50%;color:white;font-size:10px;font-weight:700;display:grid;place-items:center;flex-shrink:0;font-family:var(--ff-mono);}
+.prop-lbl{font-size:11px;font-weight:600;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;flex:1;}
+.prop-rm{width:20px;height:20px;border-radius:4px;border:1px solid var(--border);background:white;display:grid;place-items:center;cursor:pointer;color:#aaa;font-size:14px;line-height:1;transition:all .15s;}
+.prop-rm:hover{background:#fee;border-color:#fcc;color:#c0392b;}
+.prop-body{padding:10px;display:grid;gap:7px;}
+.prop-src-tg{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.prop-src-tg button{flex:1;padding:6px 4px;font-family:var(--ff-body);font-size:11px;font-weight:500;background:var(--white);border:none;border-right:1px solid var(--border);cursor:pointer;color:var(--mid);transition:all .15s;}
+.prop-src-tg button:last-child{border-right:none;}
+.prop-src-tg button.active{background:var(--dark);color:white;}
+.prop-body input,.prop-body textarea{width:100%;font-family:var(--ff-body);font-size:12px;color:var(--dark);background:var(--white);border:1px solid var(--border);border-radius:6px;padding:8px 10px;outline:none;transition:border-color .15s;appearance:none;resize:vertical;}
+.prop-body input:focus,.prop-body textarea:focus{border-color:var(--green);}
+.prop-body textarea{height:64px;}
+.add-prop-btn{display:flex;align-items:center;gap:7px;width:100%;padding:9px 12px;border-radius:8px;border:1px dashed var(--border);background:transparent;font-family:var(--ff-body);font-size:12px;font-weight:500;color:var(--mid);cursor:pointer;transition:all .15s;margin-top:4px;}
+.add-prop-btn:hover{border-color:var(--green);color:var(--green-dark);background:var(--green-light);}
+.add-prop-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;flex-shrink:0;}
+.gen-btn{width:100%;background:var(--dark);color:white;border:none;padding:14px;border-radius:10px;font-family:var(--ff-body);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;}
+.gen-btn:hover{background:var(--dark2);}
+.gen-btn:disabled{background:#aaa;cursor:not-allowed;}
+.spin{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+.gen-btn.loading .spin{display:block;}
+.reset-lnk{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--mid);cursor:pointer;text-decoration:underline;}
+.output-panel{padding:32px 36px;overflow-y:auto;}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;min-height:400px;text-align:center;color:var(--mid);}
+.empty-icon{width:64px;height:64px;background:var(--white);border-radius:16px;border:1px solid var(--border);display:grid;place-items:center;margin-bottom:16px;}
+.empty-icon svg{width:30px;height:30px;stroke:var(--green);fill:none;stroke-width:1.5;}
+.empty-state h3{font-family:var(--ff-display);font-size:20px;color:var(--dark);margin-bottom:6px;}
+.empty-state p{font-size:13px;line-height:1.6;max-width:320px;}
+.brief{display:none;max-width:840px;}
+.brief.visible{display:block;}
+.brief-topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;}
+.brief-topbar h2{font-family:var(--ff-display);font-size:22px;color:var(--dark);}
+.brief-actions{display:flex;gap:8px;}
+.action-btn{font-family:var(--ff-body);font-size:12px;font-weight:500;padding:7px 14px;border-radius:7px;cursor:pointer;border:1px solid var(--border);background:var(--white);color:var(--dark);transition:all .15s;}
+.action-btn:hover{background:var(--light);}
+.action-btn.primary{background:var(--green);color:white;border-color:var(--green);}
+.action-btn.primary:hover{background:var(--green-dark);}
+.brief-card{background:var(--white);border-radius:14px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.06);}
+.brief-hero{background:var(--dark);padding:28px 32px;position:relative;overflow:hidden;}
+.brief-hero::before{content:'';position:absolute;top:0;right:0;bottom:0;width:6px;background:var(--green);}
+.hero-top{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+.buyer-name{font-family:var(--ff-display);font-size:28px;color:white;line-height:1.1;}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;}
+.chip{font-size:11px;font-family:var(--ff-mono);padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);border:1px solid rgba(255,255,255,.12);display:inline-flex;align-items:center;gap:4px;}
+.chip.hi{background:var(--green);color:white;border-color:var(--green);}
+.chip.avail-ok{background:rgba(117,154,122,.2);color:#a3d4a8;border:1px solid rgba(117,154,122,.4);}
+.chip.avail-uc{background:rgba(234,179,8,.2);color:#fde68a;border:1px solid rgba(234,179,8,.4);}
+.chip.avail-last{background:rgba(220,38,38,.2);color:#fca5a5;border:1px solid rgba(220,38,38,.4);}
+.avail-dot{width:6px;height:6px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.hero-stats{display:flex;gap:20px;flex-wrap:wrap;}
+.stat-label{font-size:10px;color:rgba(255,255,255,.45);font-family:var(--ff-mono);text-transform:uppercase;letter-spacing:.08em;}
+.stat-val{font-size:13px;color:rgba(255,255,255,.85);font-weight:500;margin-top:2px;}
+.readiness-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;font-family:var(--ff-mono);}
+.readiness-badge.cold{background:rgba(156,163,175,.2);color:#9ca3af;border:1px solid rgba(156,163,175,.3);}
+.readiness-badge.warm{background:rgba(234,179,8,.18);color:#ca8a04;border:1px solid rgba(234,179,8,.3);}
+.readiness-badge.hot{background:rgba(249,115,22,.18);color:#ea580c;border:1px solid rgba(249,115,22,.3);}
+.readiness-badge.veryhot{background:rgba(34,197,94,.18);color:#16a34a;border:1px solid rgba(34,197,94,.3);}
+.badge-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.readiness-badge.cold .badge-dot{background:#9ca3af;}
+.readiness-badge.warm .badge-dot{background:#eab308;animation:pulse 1.4s ease-in-out infinite;}
+.readiness-badge.hot .badge-dot{background:#f97316;animation:pulse 1s ease-in-out infinite;}
+.readiness-badge.veryhot .badge-dot{background:#22c55e;animation:pulse .8s ease-in-out infinite;}
+.readiness-tip{font-size:10px;color:rgba(255,255,255,.4);font-family:var(--ff-mono);max-width:220px;line-height:1.4;text-align:right;margin-top:4px;}
+.lang-bar{display:none;background:#fffbeb;border-bottom:1px solid #fde68a;padding:10px 16px;align-items:center;gap:12px;}
+.lang-bar.visible{display:flex;}
+.lang-bar span{font-size:12px;color:#92400e;font-weight:500;}
+.lang-btns{display:flex;border:1px solid #fde68a;border-radius:6px;overflow:hidden;}
+.lang-btns button{padding:5px 14px;font-size:12px;font-family:var(--ff-body);font-weight:500;background:transparent;border:none;cursor:pointer;color:#92400e;transition:all .15s;}
+.lang-btns button.active{background:#92400e;color:white;}
+.brief-body{padding:28px 32px;display:grid;gap:24px;}
+.section-block{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.section-head{background:var(--light);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);}
+.section-icon{width:24px;height:24px;background:var(--green-light);border-radius:5px;display:grid;place-items:center;flex-shrink:0;}
+.section-icon svg{width:13px;height:13px;stroke:var(--green-dark);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.section-head h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--mid);flex:1;}
+.regen-btn{width:24px;height:24px;border-radius:5px;border:1px solid var(--border);background:var(--white);display:grid;place-items:center;cursor:pointer;transition:all .15s;flex-shrink:0;}
+.regen-btn:hover{background:var(--green-light);border-color:var(--green);}
+.regen-btn svg{width:11px;height:11px;stroke:var(--mid);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.regen-btn:hover svg{stroke:var(--green-dark);}
+.regen-btn.spinning svg{animation:spin .7s linear infinite;}
+.section-body{padding:16px;}
+.fin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px;}
+.fin-grid.two{grid-template-columns:1fr 1fr;}
+.fin-cell{background:var(--light);border-radius:8px;padding:12px 14px;text-align:center;}
+.fin-cell.accent{background:var(--green-light);}
+.fin-lbl{font-size:10px;color:var(--mid);text-transform:uppercase;letter-spacing:.07em;font-family:var(--ff-mono);margin-bottom:4px;}
+.fin-val{font-size:18px;font-weight:600;color:var(--dark);font-family:var(--ff-mono);}
+.fin-cell.accent .fin-val{color:var(--green-dark);}
+.fin-sub{font-size:10px;color:var(--mid);margin-top:2px;}
+.fin-note{font-size:12px;color:var(--mid);background:var(--light);border-radius:6px;padding:8px 12px;line-height:1.5;}
+.obj-list{display:grid;gap:10px;}
+.obj-item{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.obj-head{background:#fff8f0;padding:8px 14px;font-size:12px;font-weight:600;color:#8a4a00;border-bottom:1px solid #fde8cc;display:flex;align-items:center;gap:7px;}
+.obj-num{width:18px;height:18px;background:#f0a050;border-radius:50%;color:white;font-size:10px;font-weight:700;display:grid;place-items:center;flex-shrink:0;font-family:var(--ff-mono);}
+.obj-body{padding:10px 14px;}
+.obj-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--mid);margin-bottom:4px;font-family:var(--ff-mono);}
+.obj-text{font-size:13px;color:var(--dark);line-height:1.6;}
+.resp-block{margin-top:8px;padding-top:8px;border-top:1px dashed var(--border);}
+.resp-block .obj-lbl{color:var(--green-dark);}
+.tp-list{display:grid;gap:8px;}
+.tp-item{display:flex;gap:10px;align-items:flex-start;background:var(--light);border-radius:7px;padding:10px 12px;}
+.tp-bullet{width:20px;height:20px;background:var(--green);border-radius:50%;display:grid;place-items:center;flex-shrink:0;margin-top:1px;}
+.tp-bullet svg{width:10px;height:10px;stroke:white;fill:none;stroke-width:2.5;stroke-linecap:round;}
+.tp-text{font-size:13px;color:var(--dark);line-height:1.6;flex:1;}
+.tp-copy{width:26px;height:26px;border-radius:5px;border:1px solid var(--border);background:white;display:grid;place-items:center;cursor:pointer;flex-shrink:0;transition:all .15s;margin-top:1px;}
+.tp-copy:hover{background:var(--green-light);border-color:var(--green);}
+.tp-copy svg{width:12px;height:12px;stroke:var(--mid);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.tp-copy:hover svg{stroke:var(--green-dark);}
+.tp-copy.copied{background:var(--green);border-color:var(--green);}
+.tp-copy.copied svg{stroke:white;}
+.water-badge{display:inline-flex;align-items:center;gap:6px;background:#e8f4fb;color:#1a5f8a;border:1px solid #b8d8ef;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:500;margin-bottom:10px;}
+.water-badge svg{width:13px;height:13px;stroke:#1a6fa0;fill:none;stroke-width:2;}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:shimmer 1.2s infinite;border-radius:6px;height:14px;margin-bottom:8px;}
+.stream-ind{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--green-dark);font-family:var(--ff-mono);margin-bottom:16px;}
+.stream-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 1s ease-in-out infinite;}
+.brief-footer{padding:16px 32px;border-top:1px solid var(--border);background:var(--light);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.footer-info{font-size:11px;color:var(--mid);font-family:var(--ff-mono);}
+.footer-info strong{color:var(--dark);}
+.prep-wrap{display:flex;align-items:center;gap:8px;}
+.prep-wrap label{font-size:11px;color:var(--mid);font-family:var(--ff-mono);white-space:nowrap;}
+.prep-select{position:relative;}
+.prep-select select{font-family:var(--ff-mono);font-size:11px;color:var(--dark);border:1px solid var(--border);background:white;border-radius:5px;padding:4px 24px 4px 8px;appearance:none;cursor:pointer;}
+.prep-select-arrow{position:absolute;right:6px;top:50%;transform:translateY(-50%);pointer-events:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+@media print{.app-header,.form-panel,.brief-topbar,.brief-actions,.tp-copy,.regen-btn{display:none!important;}.layout{display:block;}.output-panel{padding:0;}.brief{display:block!important;}.brief-card{box-shadow:none;border:1px solid #ccc;}body{background:white;}.brief-footer{display:flex!important;}}
+@media(max-width:960px){.layout{grid-template-columns:1fr;}.form-panel{height:auto;position:static;border-right:none;border-bottom:1px solid var(--border);}.output-panel{padding:20px 16px;}.fin-grid{grid-template-columns:1fr 1fr;}.brief-hero{padding:20px;}.brief-body{padding:20px;}.brief-footer{padding:16px 20px;}.app-header{padding:0 16px;}}
+</style>
+</head>
+<body>
 
-function computeReadiness(source, down, properties) {
-  let price = null;
-  properties.forEach(p => { const v = parsePrice(p.details) || parsePrice(p.name); if (v && !price) price = v; });
-  const pct = price ? down / price : 0;
-  const high = ["Referral", "LandWatch"].includes(source);
-  const mid = ["Facebook", "Google", "TikTok"].includes(source);
-  if (pct >= 0.1 && high) return "veryhot";
-  if (pct >= 0.1 && mid) return "hot";
-  if (pct >= 0.05 || high) return "warm";
-  return "cold";
-}
-
-function buildPrompt({ name, source, lang, down, notes, persona, availability, tourType, attending, properties, sectionOverride }) {
-  const isSpanish = lang === "Spanish";
-  const itin = isSpanish ? "ITIN accepted (no SSN required). " : "";
-  const propBlock = properties.length
-    ? properties.map((p, i) => {
-        const modeLabel = p.mode === "url" ? "URL" : p.mode === "description" ? "Description" : "Details";
-        const content = p.mode === "url" ? p.url : p.mode === "description" ? p.description : p.details;
-        return `Property ${i + 1}: ${p.name || "(unnamed)"}\n  [${modeLabel}]: ${content || "No additional info provided"}`;
-      }).join("\n\n")
-    : "No specific properties listed -- use buyer notes to recommend best fits.";
-
-  const availCtx = availability === "Available"
-    ? "The parcel is currently available."
-    : availability === "Under Contract"
-    ? "This parcel is under contract. Focus on comparable available parcels or waitlist options."
-    : "This is the last parcel in this subdivision. Use appropriate urgency and scarcity language.";
-
-  const tourCtx = tourType === "Virtual"
-    ? "Virtual tour. Specialist should rely more on descriptions and data, and build rapport remotely."
-    : tourType === "Self-Guided"
-    ? "Self-guided tour. Specialist not on-site. Talking points should work as a printed or texted guide."
-    : "In-person tour at the property.";
-
-  const attendCtx = attending === "Buyer + spouse"
-    ? "Buyer's spouse is attending. Include spouse-specific social proof. Both partners need to feel confident."
-    : attending === "Buyer + family"
-    ? "Buyer is bringing family. Acknowledge multi-generational appeal, legacy, outdoor experiences for kids."
-    : "Only the buyer is attending.";
-
-  const sectionInstr = sectionOverride
-    ? `Generate ONLY the "${sectionOverride}" section. Return the same JSON structure with only that key populated; other keys should be empty arrays or empty strings.`
-    : "Generate all sections.";
-
-  const spanishBlock = isSpanish ? `,
-  "spanish": {
-    "parcelFacts": ["hecho 1", "hecho 2", "hecho 3", "hecho 4"],
-    "waterRightsSummary": "Resumen sobre derechos de agua para terrenos agricolas A5 en el condado de Duchesne...",
-    "objections": [
-      {"title": "Etiqueta", "objection": "Lo que podria decir el comprador", "response": "Respuesta del especialista"},
-      {"title": "Etiqueta", "objection": "Segunda objecion", "response": "Respuesta"},
-      {"title": "Etiqueta", "objection": "Tercera objecion", "response": "Respuesta"}
-    ],
-    "talkingPoints": ["Punto de conversacion 1 -- mencione que ITIN es aceptado", "Punto 2", "Punto 3", "Punto 4", "Punto 5"]
-  }` : "";
-
-  return `You are preparing a pre-tour buyer prep kit for a land specialist at Mountains West Ranches (MWR) in Duchesne County, Utah. MWR sells A5-zoned agricultural parcels with owner financing (no credit check, $1,000 min down, 10 or 15-year terms at 9.9% interest). ${itin}
-
-Buyer: ${name}
-Lead source: ${source}
-Language track: ${lang}
-Down payment: $${down.toLocaleString()}
-Buyer persona: ${persona}
-Parcel availability: ${availability}
-Tour type: ${tourType}
-Who is attending: ${attending}
-${notes ? `Additional notes: ${notes}` : ""}
-
-PROPERTIES OF INTEREST:
-${propBlock}
-
-PERSONA CONTEXT:
-${PERSONA_CONTEXT[persona] || PERSONA_CONTEXT.Unknown}
-
-AVAILABILITY CONTEXT: ${availCtx}
-TOUR CONTEXT: ${tourCtx}
-ATTENDING CONTEXT: ${attendCtx}
-
-${sectionInstr}
-
-Return ONLY valid JSON with exactly these keys. No markdown, no preamble, no em dashes anywhere:
-
-{
-  "parcelFacts": ["fact 1 -- specific and useful for the land specialist on tour", "fact 2", "fact 3", "fact 4"],
-  "waterRightsSummary": "2-3 sentences about water rights for A5-zoned parcels in Duchesne County. Cover stock water rights, culinary water access, and what buyers should know.",
-  "objections": [
-    {"title": "Short label", "objection": "Likely buyer concern based on ${source} lead source AND ${persona} persona", "response": "Land specialist response -- warm, confident, factual. 2-3 sentences. No em dashes."},
-    {"title": "Short label", "objection": "Second concern", "response": "Response"},
-    {"title": "Short label", "objection": "Third concern", "response": "Response"}
-  ],
-  "talkingPoints": ["Point 1 tailored to ${persona} persona, ${source} source, ${tourType} tour, ${attending} attending", "Point 2", "Point 3", "Point 4", "Point 5"]${spanishBlock}
-}
-
-Rules:
-- No em dashes -- use commas, colons, or periods instead
-- ${isSpanish ? "Spanish section must include ITIN accepted language and be fully in Spanish. English section must NOT include ITIN references." : "English only. Never reference ITIN or SSN."}
-- Objections must reflect BOTH the lead source behavior AND the persona motivations
-- Reference specific property names/details where possible
-- Talking points must build rapport and move toward a close -- not just describe land
-- ${availability !== "Available" ? "Reflect the availability status in talking points." : ""}
-- ${tourType === "Virtual" ? "Include virtual-specific pacing notes in talking points." : ""}
-- ${attending === "Buyer + spouse" ? "At least one talking point should address the spouse." : ""}
-- No generic filler -- every sentence must be immediately useful on tour`;
-}
-
-// ---- ICONS ----
-const IconRefresh = () => (
-  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
-  </svg>
-);
-const IconCopy = () => (
-  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-  </svg>
-);
-const IconCheck = () => (
-  <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-    <polyline points="20 6 9 17 4 12"/>
-  </svg>
-);
-const IconPlus = () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-  </svg>
-);
-const IconDollar = () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-  </svg>
-);
-const IconHome = () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-  </svg>
-);
-const IconDroplet = () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/>
-  </svg>
-);
-const IconAlert = () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-  </svg>
-);
-const IconChat = () => (
-  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-  </svg>
-);
-const IconFile = () => (
-  <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="#759A7A" strokeWidth="1.5" strokeLinecap="round">
-    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-    <polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-  </svg>
-);
-
-// ---- SKELETON ----
-function Skeleton() {
-  return (
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
     <div>
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 12, fontSize: 12, color: "#4d6e52", fontFamily: "monospace" }}>
-        <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#759A7A", display: "inline-block", animation: "pulse 1s ease-in-out infinite" }} />
-        Generating...
-      </div>
-      {[90, 75, 82].map((w, i) => (
-        <div key={i} style={{ height: 14, borderRadius: 6, marginBottom: 8, width: `${w}%`, background: "linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%)", backgroundSize: "200% 100%", animation: "shimmer 1.2s infinite" }} />
-      ))}
+      <div class="brand-name">Mountains West Ranches</div>
+      <div class="brand-sub">Pre-Tour Buyer Prep Kit</div>
     </div>
-  );
-}
+  </div>
+  <span class="team-badge">Land Specialists</span>
+</header>
 
-// ---- PROPERTY ENTRY ----
-function PropertyEntry({ prop, index, isFirst, onRemove, onChange }) {
-  const { mode, name, details, url, description } = prop;
-  const s = { width: "100%", fontFamily: "IBM Plex Sans, sans-serif", fontSize: 12, color: "#1C1C1C", background: "#fff", border: "1px solid #e2e2e2", borderRadius: 6, padding: "8px 10px", outline: "none", boxSizing: "border-box" };
-  return (
-    <div style={{ border: "1px solid #e2e2e2", borderRadius: 8, overflow: "hidden", background: "#F1F1F1" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 10px", background: "#fff", borderBottom: "1px solid #e2e2e2" }}>
-        <div style={{ width: 18, height: 18, background: "#759A7A", borderRadius: "50%", color: "white", fontSize: 10, fontWeight: 700, display: "grid", placeItems: "center", flexShrink: 0, fontFamily: "monospace" }}>{index + 1}</div>
-        <div style={{ fontSize: 11, fontWeight: 600, color: "#666", textTransform: "uppercase", letterSpacing: "0.07em", flex: 1 }}>Property {index + 1}</div>
-        {!isFirst && <button onClick={onRemove} style={{ width: 20, height: 20, borderRadius: 4, border: "1px solid #e2e2e2", background: "white", cursor: "pointer", fontSize: 14, lineHeight: 1, color: "#aaa", display: "grid", placeItems: "center" }}>&times;</button>}
-      </div>
-      <div style={{ padding: 10, display: "grid", gap: 7 }}>
-        <div style={{ display: "flex", border: "1px solid #e2e2e2", borderRadius: 6, overflow: "hidden" }}>
-          {["details", "url", "description"].map(m => (
-            <button key={m} onClick={() => onChange("mode", m)} style={{ flex: 1, padding: "6px 4px", fontSize: 11, fontWeight: 500, fontFamily: "IBM Plex Sans, sans-serif", border: "none", borderRight: m !== "description" ? "1px solid #e2e2e2" : "none", cursor: "pointer", background: mode === m ? "#1C1C1C" : "#fff", color: mode === m ? "white" : "#666", transition: "all 0.15s" }}>
-              {m === "details" ? "Enter details" : m === "url" ? "Paste URL" : "Paste description"}
-            </button>
-          ))}
+<div class="layout">
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <h2>Buyer Details</h2>
+    <p class="form-sub">Fill in what you know before the tour. The land specialist gets a personalized brief with financing, objections, and talking points.</p>
+
+    <div class="field">
+      <label>Buyer Name</label>
+      <input type="text" id="f-name" placeholder="e.g. Marcus Rivera">
+    </div>
+
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field" style="margin-bottom:0;">
+        <label>Lead Source</label>
+        <div class="sel-wrap">
+          <select id="f-source">
+            <option value="Facebook">Facebook / Meta</option>
+            <option value="Google">Google Ads</option>
+            <option value="LandWatch">LandWatch</option>
+            <option value="Referral">Referral</option>
+            <option value="TikTok">TikTok</option>
+            <option value="Walk-in">Walk-in</option>
+          </select>
+          <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
         </div>
-        <input style={s} type="text" placeholder="Property name or lot number (e.g. Lot 14, Buck Horn Mesa)" value={name} onChange={e => onChange("name", e.target.value)} />
-        {mode === "details" && <input style={s} type="text" placeholder="Acreage, price, features (e.g. 5 acres, $42,000, water access)" value={details} onChange={e => onChange("details", e.target.value)} />}
-        {mode === "url" && <input style={s} type="url" placeholder="https://www.landwatch.com/..." value={url} onChange={e => onChange("url", e.target.value)} />}
-        {mode === "description" && <textarea style={{ ...s, height: 64, resize: "vertical" }} placeholder="Paste the full property description here..." value={description} onChange={e => onChange("description", e.target.value)} />}
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>Language Track</label>
+        <div class="sel-wrap">
+          <select id="f-lang" onchange="onLangChange()">
+            <option value="English">English (MWR)</option>
+            <option value="Spanish">Spanish (Terrenos)</option>
+          </select>
+          <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+        </div>
       </div>
     </div>
-  );
-}
 
-// ---- TOGGLE GROUP ----
-function ToggleGroup({ options, value, onChange, colorize }) {
-  return (
-    <div style={{ display: "flex", border: "1px solid #e2e2e2", borderRadius: 8, overflow: "hidden" }}>
-      {options.map((opt, i) => {
-        const active = value === opt.value;
-        let bg = active ? "#1C1C1C" : "#F1F1F1";
-        if (active && colorize) {
-          if (opt.color === "green") bg = "#759A7A";
-          else if (opt.color === "amber") bg = "#d97706";
-          else if (opt.color === "red") bg = "#dc2626";
-        }
-        return (
-          <button key={opt.value} onClick={() => onChange(opt.value)} style={{ flex: 1, padding: "9px 6px", fontSize: 12, fontWeight: 500, fontFamily: "IBM Plex Sans, sans-serif", border: "none", borderRight: i < options.length - 1 ? "1px solid #e2e2e2" : "none", cursor: "pointer", background: bg, color: active ? "white" : "#666", transition: "all 0.15s", lineHeight: 1.3 }}>
-            {opt.label}
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-// ---- FIELD LABEL ----
-function FieldLabel({ children }) {
-  return <div style={{ fontSize: 11, fontWeight: 600, color: "#666", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 6 }}>{children}</div>;
-}
-
-// ---- SELECT ----
-function Select({ id, value, onChange, children }) {
-  return (
-    <div style={{ position: "relative" }}>
-      <select id={id} value={value} onChange={e => onChange(e.target.value)} style={{ width: "100%", fontFamily: "IBM Plex Sans, sans-serif", fontSize: 13, color: "#1C1C1C", background: "#F1F1F1", border: "1px solid #e2e2e2", borderRadius: 8, padding: "10px 32px 10px 12px", outline: "none", appearance: "none", cursor: "pointer" }}>
-        {children}
-      </select>
-      <div style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>
+    <div class="field">
+      <label>Buyer Type / Persona</label>
+      <div class="sel-wrap">
+        <select id="f-persona">
+          <option value="Unknown">Unknown / Not sure yet</option>
+          <option value="Dave">Dave -- Self-sufficient homesteader</option>
+          <option value="Jim">Jim -- Retirement / Investment buyer</option>
+          <option value="Ryan">Ryan -- Hunter / Recreation buyer</option>
+          <option value="Sarah">Sarah -- Remote work / Off-grid lifestyle</option>
+          <option value="Frank">Frank -- Spanish-speaking buyer</option>
+        </select>
+        <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
       </div>
     </div>
-  );
-}
 
-// ---- SECTION BLOCK ----
-function SectionBlock({ icon, title, children, onRegen, regenning }) {
-  return (
-    <div style={{ border: "1px solid #e2e2e2", borderRadius: 10, overflow: "hidden" }}>
-      <div style={{ background: "#F1F1F1", padding: "10px 16px", display: "flex", alignItems: "center", gap: 8, borderBottom: "1px solid #e2e2e2" }}>
-        <div style={{ width: 24, height: 24, background: "#eaf1eb", borderRadius: 5, display: "grid", placeItems: "center", flexShrink: 0, color: "#4d6e52" }}>{icon}</div>
-        <div style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#666", flex: 1 }}>{title}</div>
-        {onRegen && (
-          <button onClick={onRegen} title="Regenerate this section" style={{ width: 24, height: 24, borderRadius: 5, border: "1px solid #e2e2e2", background: "white", display: "grid", placeItems: "center", cursor: "pointer", color: regenning ? "#759A7A" : "#666", transition: "all 0.15s", animation: regenning ? "spin 0.7s linear infinite" : "none" }}>
-            <IconRefresh />
-          </button>
-        )}
-      </div>
-      <div style={{ padding: 16 }}>{children}</div>
-    </div>
-  );
-}
-
-// ---- TALKING POINT ROW ----
-function TalkingPointRow({ text }) {
-  const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(text).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    });
-  };
-  return (
-    <div style={{ display: "flex", gap: 10, alignItems: "flex-start", background: "#F1F1F1", borderRadius: 7, padding: "10px 12px" }}>
-      <div style={{ width: 20, height: 20, background: "#759A7A", borderRadius: "50%", display: "grid", placeItems: "center", flexShrink: 0, marginTop: 1 }}>
-        <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>
-      <div style={{ fontSize: 13, color: "#1C1C1C", lineHeight: 1.6, flex: 1 }}>{text}</div>
-      <button onClick={copy} title="Copy" style={{ width: 26, height: 26, borderRadius: 5, border: `1px solid ${copied ? "#759A7A" : "#e2e2e2"}`, background: copied ? "#759A7A" : "white", display: "grid", placeItems: "center", cursor: "pointer", flexShrink: 0, color: copied ? "white" : "#666", transition: "all 0.15s", marginTop: 1 }}>
-        {copied ? <IconCheck /> : <IconCopy />}
+    <div class="field">
+      <div class="field-lbl">Properties of Interest</div>
+      <p class="field-note">Add specific parcels, or describe what the buyer wants and let the specialist fill in the best fits.</p>
+      <div class="prop-list" id="prop-list"></div>
+      <button class="add-prop-btn" onclick="addProperty()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add another property
       </button>
     </div>
-  );
-}
 
-// ---- OBJECTION ITEM ----
-function ObjectionItem({ obj, idx, isSpanish }) {
-  return (
-    <div style={{ border: "1px solid #e2e2e2", borderRadius: 8, overflow: "hidden" }}>
-      <div style={{ background: "#fff8f0", padding: "8px 14px", fontSize: 12, fontWeight: 600, color: "#8a4a00", borderBottom: "1px solid #fde8cc", display: "flex", alignItems: "center", gap: 7 }}>
-        <div style={{ width: 18, height: 18, background: "#f0a050", borderRadius: "50%", color: "white", fontSize: 10, fontWeight: 700, display: "grid", placeItems: "center", flexShrink: 0, fontFamily: "monospace" }}>{idx + 1}</div>
-        {obj.title}
+    <div class="field">
+      <div class="field-lbl">Parcel Availability</div>
+      <div class="tg" id="tg-avail">
+        <button class="active g" onclick="setToggle('tg-avail',this,'Available','g')">Available</button>
+        <button onclick="setToggle('tg-avail',this,'Under Contract','a')">Under Contract</button>
+        <button onclick="setToggle('tg-avail',this,'Last One in Subdivision','r')">Last One</button>
       </div>
-      <div style={{ padding: "10px 14px" }}>
-        <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.07em", color: "#666", marginBottom: 4, fontFamily: "monospace" }}>{isSpanish ? "Lo que podrian decir" : "What they might say"}</div>
-        <div style={{ fontSize: 13, color: "#1C1C1C", lineHeight: 1.6 }}>{obj.objection}</div>
-        <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px dashed #e2e2e2" }}>
-          <div style={{ fontSize: 10, textTransform: "uppercase", letterSpacing: "0.07em", color: "#4d6e52", marginBottom: 4, fontFamily: "monospace" }}>{isSpanish ? "Respuesta sugerida" : "Suggested response"}</div>
-          <div style={{ fontSize: 13, color: "#1C1C1C", lineHeight: 1.6 }}>{obj.response}</div>
+    </div>
+
+    <div class="field-row" style="margin-bottom:16px;">
+      <div class="field" style="margin-bottom:0;">
+        <label>Estimated Down Payment</label>
+        <input type="number" id="f-down" placeholder="e.g. 3000" min="1000">
+      </div>
+      <div class="field" style="margin-bottom:0;">
+        <label>Preferred Term</label>
+        <div class="sel-wrap">
+          <select id="f-term">
+            <option value="both">Show Both (10 &amp; 15 yr)</option>
+            <option value="10">10 Years</option>
+            <option value="15">15 Years</option>
+          </select>
+          <div class="sel-arrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
         </div>
       </div>
     </div>
-  );
+
+    <div class="field-row" style="margin-bottom:16px;">
+      <div>
+        <div class="field-lbl">Tour Type</div>
+        <div class="tg" id="tg-tour">
+          <button class="active" onclick="setToggle('tg-tour',this,'In-Person','')">In-Person</button>
+          <button onclick="setToggle('tg-tour',this,'Virtual','')">Virtual</button>
+          <button onclick="setToggle('tg-tour',this,'Self-Guided','')">Self</button>
+        </div>
+      </div>
+      <div>
+        <div class="field-lbl">Who's Attending</div>
+        <div class="tg" id="tg-attend">
+          <button class="active" onclick="setToggle('tg-attend',this,'Buyer only','')">Solo</button>
+          <button onclick="setToggle('tg-attend',this,'Buyer + spouse','')">+ Spouse</button>
+          <button onclick="setToggle('tg-attend',this,'Buyer + family','')">Family</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Notes on buyer (optional)</label>
+      <textarea id="f-notes" placeholder="e.g. Has land already, wants more acreage. Spouse very involved in decision."></textarea>
+    </div>
+
+    <hr class="divider">
+    <button class="gen-btn" id="gen-btn" onclick="generateBrief()">
+      <div class="spin"></div>
+      <span id="gen-btn-text">Generate Prep Kit</span>
+    </button>
+    <span class="reset-lnk" onclick="resetForm()">Clear form</span>
+  </div>
+
+  <!-- OUTPUT PANEL -->
+  <div class="output-panel">
+    <div class="empty-state" id="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <h3>Ready when you are</h3>
+      <p>Fill in the buyer details and click Generate. The land specialist gets a fully personalized one-page brief in seconds.</p>
+    </div>
+
+    <div class="brief" id="brief-output">
+      <div class="brief-topbar">
+        <h2 id="brief-title">Buyer Prep Kit</h2>
+        <div class="brief-actions">
+          <button class="action-btn" onclick="window.print()">Print / Save PDF</button>
+          <button class="action-btn primary" onclick="generateBrief()">Regenerate All</button>
+        </div>
+      </div>
+
+      <div class="brief-card">
+        <div class="lang-bar" id="lang-bar">
+          <span>Bilingual brief ready:</span>
+          <div class="lang-btns">
+            <button class="active" id="lb-en" onclick="switchLang('en')">English</button>
+            <button id="lb-es" onclick="switchLang('es')">Espanol</button>
+          </div>
+        </div>
+
+        <div class="brief-hero">
+          <div class="hero-top">
+            <div>
+              <div class="buyer-name" id="out-name"></div>
+              <div class="chips" id="out-chips"></div>
+            </div>
+            <div style="text-align:right;">
+              <div id="out-readiness"></div>
+              <div class="readiness-tip" id="out-readiness-tip"></div>
+            </div>
+          </div>
+          <div class="hero-stats" id="out-stats"></div>
+        </div>
+
+        <div class="brief-body">
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+              <h3>Financing Breakdown</h3>
+            </div>
+            <div class="section-body" id="out-financing"></div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+              <h3>Parcel Overview</h3>
+              <button class="regen-btn" id="regen-parcel" title="Regenerate" onclick="regenSection('parcelFacts','out-parcel','regen-parcel')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-parcel"></div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></div>
+              <h3>Water Rights Note</h3>
+              <button class="regen-btn" id="regen-water" title="Regenerate" onclick="regenSection('waterRightsSummary','out-water','regen-water')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-water"></div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+              <h3>Likely Objections</h3>
+              <button class="regen-btn" id="regen-obj" title="Regenerate" onclick="regenSection('objections','out-objections','regen-obj')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-objections"></div>
+          </div>
+
+          <div class="section-block">
+            <div class="section-head">
+              <div class="section-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+              <h3>Talking Points for the Land Specialist</h3>
+              <button class="regen-btn" id="regen-tp" title="Regenerate" onclick="regenSection('talkingPoints','out-talking','regen-tp')">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              </button>
+            </div>
+            <div class="section-body" id="out-talking"></div>
+          </div>
+        </div>
+
+        <div class="brief-footer">
+          <div class="footer-info" id="out-timestamp"></div>
+          <div class="prep-wrap">
+            <label for="prep-by">Prepared by:</label>
+            <div class="prep-select" style="position:relative;">
+              <select id="prep-by" style="font-family:var(--ff-mono);font-size:11px;color:var(--dark);border:1px solid var(--border);background:white;border-radius:5px;padding:4px 24px 4px 8px;appearance:none;cursor:pointer;">
+                <option>Kelly</option><option>Shay</option><option>Silvia</option>
+              </select>
+              <div style="position:absolute;right:6px;top:50%;transform:translateY(-50%);pointer-events:none;">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#666" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ---- CONSTANTS ----
+var RATE = 0.099;
+var PERSONA = {
+  Dave: 'Dave is a self-sufficient homesteader. He cares about acreage utility, water access, fencing, zoning flexibility, and long-term self-reliance. He may object to anything that feels like HOA control or government restriction. Lead with what he can DO on the land.',
+  Jim: 'Jim is a retirement or investment buyer. He cares about asset appreciation, low-hassle ownership, and whether this land holds or grows in value. He may compare to 401k or other investments. Lead with land as a tangible, appreciating asset.',
+  Ryan: 'Ryan is a hunter or recreation buyer. He cares about hunting, ATV access, wildlife, proximity to public land, and seasonality. He may already own land elsewhere. Lead with recreational access and lifestyle, not agriculture.',
+  Sarah: 'Sarah is a remote-work or off-grid lifestyle buyer. She cares about internet access (or Starlink feasibility), building a cabin or tiny home, solar viability, and escaping suburban life. She may bring a partner. Lead with vision and possibility.',
+  Frank: 'Frank is a Spanish-speaking buyer. He cares about being understood and respected. He may be unfamiliar with land buying in Utah, and ITIN financing is a key differentiator. Lead with trust, simplicity, and community connection.',
+  Unknown: 'Buyer persona is unknown. Use context clues from the lead source and notes to infer motivations.'
+};
+var R_LABELS = {cold:'Cold',warm:'Warm',hot:'Hot',veryhot:'Very Hot'};
+var R_TIPS = {
+  cold:'Low down and lower-intent source. Focus on building value and financing ease.',
+  warm:'Moderate signals. Lead with the monthly payment story and owner financing simplicity.',
+  hot:'Strong down or high-intent source. Move toward urgency and close.',
+  veryhot:'High down + high-intent source. This buyer is ready. Prioritize decision-making support.'
+};
+
+// ---- STATE ----
+var lastResult = null;
+var currentLang = 'en';
+var propCount = 0;
+var TV = {'tg-avail':'Available','tg-tour':'In-Person','tg-attend':'Buyer only'};
+
+// ---- DOM HELPERS ----
+function g(id) { return document.getElementById(id); }
+function clr(id) { var e = g(id); while (e.firstChild) e.removeChild(e.firstChild); return e; }
+function mk(tag, cls, txt) {
+  var e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (txt !== undefined) e.textContent = txt;
+  return e;
+}
+var NS = 'http://www.w3.org/2000/svg';
+function mkSvg(viewBox) {
+  var s = document.createElementNS(NS, 'svg');
+  s.setAttribute('viewBox', viewBox || '0 0 24 24');
+  return s;
+}
+function mkSvgEl(tag, attrs) {
+  var e = document.createElementNS(NS, tag);
+  Object.keys(attrs).forEach(function(k) { e.setAttribute(k, attrs[k]); });
+  return e;
 }
 
-// ---- MAIN APP ----
-export default function App() {
-  // Form state
-  const [buyerName, setBuyerName] = useState("");
-  const [source, setSource] = useState("Facebook");
-  const [lang, setLang] = useState("English");
-  const [persona, setPersona] = useState("Unknown");
-  const [availability, setAvailability] = useState("Available");
-  const [down, setDown] = useState("");
-  const [termPref, setTermPref] = useState("both");
-  const [tourType, setTourType] = useState("In-Person");
-  const [attending, setAttending] = useState("Buyer only");
-  const [notes, setNotes] = useState("");
-  const [preparedBy, setPreparedBy] = useState("Kelly");
-  const [properties, setProperties] = useState([{ mode: "details", name: "", details: "", url: "", description: "" }]);
+// ---- SVG ICONS ----
+function icoCheck() {
+  var s = mkSvg(); var p = mkSvgEl('polyline', {points:'20 6 9 17 4 12'}); s.appendChild(p); return s;
+}
+function icoCopy() {
+  var s = mkSvg();
+  s.appendChild(mkSvgEl('rect', {x:'9',y:'9',width:'13',height:'13',rx:'2'}));
+  s.appendChild(mkSvgEl('path', {d:'M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1'}));
+  return s;
+}
+function icoDroplet() {
+  var s = mkSvg(); s.appendChild(mkSvgEl('path', {d:'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z'})); return s;
+}
 
-  // Output state
-  const [briefVisible, setBriefVisible] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [currentLang, setCurrentLang] = useState("en");
-  const [result, setResult] = useState(null);
-  const [regenning, setRegenning] = useState({});
-  const [generatedAt, setGeneratedAt] = useState(null);
+// ---- PROPERTY LIST ----
+window.addProperty = function() {
+  propCount++;
+  var pid = 'p' + propCount;
+  var list = g('prop-list');
+  var idx = list.children.length + 1;
 
-  // Hero snapshot (for display after generation)
-  const [heroSnap, setHeroSnap] = useState(null);
+  var wrap = mk('div', 'prop-entry'); wrap.id = pid;
+  var head = mk('div', 'prop-head');
+  head.appendChild(mk('div', 'prop-num', String(idx)));
+  head.appendChild(mk('div', 'prop-lbl', 'Property ' + idx));
+  if (idx > 1) {
+    var rm = mk('button', 'prop-rm', '\u00d7');
+    rm.title = 'Remove';
+    (function(p) { rm.onclick = function() { window.removeProp(p); }; })(pid);
+    head.appendChild(rm);
+  }
 
-  const isSpanish = lang === "Spanish";
-  const downNum = parseFloat(down) || 0;
+  var body = mk('div', 'prop-body');
+  var srcTg = mk('div', 'prop-src-tg'); srcTg.id = 'src-' + pid;
+  [['details','Enter details'],['url','Paste URL'],['desc','Paste description']].forEach(function(pair, i) {
+    var b = mk('button', i === 0 ? 'active' : '', pair[1]);
+    (function(mode, btn) { btn.onclick = function() { setPropMode(pid, mode, btn); }; })(pair[0], b);
+    srcTg.appendChild(b);
+  });
 
-  const readiness = computeReadiness(source, downNum, properties);
-  const rc = READINESS_COLORS[readiness];
+  var nameIn = document.createElement('input');
+  nameIn.type = 'text'; nameIn.id = pid + '-name';
+  nameIn.placeholder = 'Property name or lot number (e.g. Lot 14, Buck Horn Mesa)';
 
-  // Property helpers
-  const addProperty = () => setProperties(p => [...p, { mode: "details", name: "", details: "", url: "", description: "" }]);
-  const removeProperty = (i) => setProperties(p => p.filter((_, idx) => idx !== i));
-  const updateProperty = (i, key, val) => setProperties(p => p.map((prop, idx) => idx === i ? { ...prop, [key]: val } : prop));
+  var dW = mk('div'); dW.id = pid + '-dW';
+  var dIn = document.createElement('input');
+  dIn.type = 'text'; dIn.id = pid + '-det';
+  dIn.placeholder = 'Acreage, price, features (e.g. 5 acres, $42,000, water access)';
+  dW.appendChild(dIn);
 
-  // Financing
-  const getPriceFromProperties = () => {
-    let price = null;
-    properties.forEach(p => {
-      const v = parsePrice(p.details) || parsePrice(p.name);
-      if (v && !price) price = v;
-    });
-    return price;
-  };
-  const priceGuess = getPriceFromProperties();
+  var uW = mk('div'); uW.id = pid + '-uW'; uW.style.display = 'none';
+  var uIn = document.createElement('input');
+  uIn.type = 'url'; uIn.id = pid + '-url';
+  uIn.placeholder = 'https://www.landwatch.com/...';
+  uW.appendChild(uIn);
 
-  const buildFinancingData = () => {
-    if (!priceGuess || !downNum) return null;
-    const remaining = priceGuess - downNum;
-    const terms = termPref === "both" ? [10, 15] : [parseInt(termPref)];
-    return { price: priceGuess, down: downNum, remaining, terms };
-  };
-  const finData = buildFinancingData();
+  var descW = mk('div'); descW.id = pid + '-descW'; descW.style.display = 'none';
+  var descTa = document.createElement('textarea');
+  descTa.id = pid + '-desc';
+  descTa.placeholder = 'Paste the full property description here...';
+  descW.appendChild(descTa);
 
-  // Get active content based on language
-  const getContent = (key) => {
-    if (!result) return null;
-    if (currentLang === "es" && result.spanish) return result.spanish[key];
-    return result[key];
-  };
+  body.appendChild(srcTg); body.appendChild(nameIn);
+  body.appendChild(dW); body.appendChild(uW); body.appendChild(descW);
+  wrap.appendChild(head); wrap.appendChild(body);
+  list.appendChild(wrap);
+};
 
-  // Generate
-  const generate = async () => {
-    if (!buyerName.trim()) { alert("Please enter the buyer name."); return; }
-    if (downNum < 1000) { alert("Minimum down payment is $1,000."); return; }
-    setLoading(true);
-    setBriefVisible(true);
-    setResult(null);
-    setCurrentLang("en");
-    setGeneratedAt(new Date());
+window.removeProp = function(pid) {
+  var e = g(pid); if (e) e.remove();
+  renumberProps();
+};
 
-    // Snapshot hero values
-    const propNames = properties.map(p => p.name).filter(Boolean).join(", ") || "To be matched";
-    setHeroSnap({ buyerName, source, lang, persona, tourType, availability, attending, propNames, down: downNum });
+function renumberProps() {
+  document.querySelectorAll('#prop-list .prop-entry').forEach(function(entry, i) {
+    var n = entry.querySelector('.prop-num');
+    var l = entry.querySelector('.prop-lbl');
+    if (n) n.textContent = i + 1;
+    if (l) l.textContent = 'Property ' + (i + 1);
+    if (i === 0) { var rm = entry.querySelector('.prop-rm'); if (rm) rm.remove(); }
+  });
+}
 
-    const prompt = buildPrompt({ name: buyerName, source, lang, down: downNum, notes, persona, availability, tourType, attending, properties, sectionOverride: null });
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: isSpanish ? 2200 : 1600, messages: [{ role: "user", content: prompt }] }),
-      });
-      const data = await res.json();
-      const raw = data.content?.find(b => b.type === "text")?.text || "";
-      const parsed = JSON.parse(raw.replace(/```json|```/g, "").trim());
-      setResult(parsed);
-    } catch (err) {
-      console.error(err);
-      setResult({ error: true });
+function setPropMode(pid, mode, btn) {
+  g('src-' + pid).querySelectorAll('button').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  g(pid + '-dW').style.display = mode === 'details' ? '' : 'none';
+  g(pid + '-uW').style.display = mode === 'url' ? '' : 'none';
+  g(pid + '-descW').style.display = mode === 'desc' ? '' : 'none';
+}
+
+function collectProps() {
+  var out = [];
+  document.querySelectorAll('#prop-list .prop-entry').forEach(function(entry, i) {
+    var pid = entry.id;
+    var name = (g(pid + '-name') || {}).value || '';
+    var ab = entry.querySelector('.prop-src-tg .active');
+    var mt = ab ? ab.textContent.trim() : 'Enter details';
+    var content = '';
+    if (mt === 'Enter details') content = (g(pid + '-det') || {}).value || '';
+    else if (mt === 'Paste URL') content = (g(pid + '-url') || {}).value || '';
+    else content = (g(pid + '-desc') || {}).value || '';
+    if (name.trim() || content.trim()) {
+      out.push({num: i+1, name: name.trim() || ('Property ' + (i+1)), mode: mt, content: content.trim()});
     }
-    setLoading(false);
-  };
-
-  const regenSection = async (sectionKey) => {
-    if (!result) return;
-    setRegenning(r => ({ ...r, [sectionKey]: true }));
-    const sectionMap = { parcel: "parcelFacts", water: "waterRightsSummary", objections: "objections", talking: "talkingPoints" };
-    const prompt = buildPrompt({ name: buyerName, source, lang, down: downNum, notes, persona, availability, tourType, attending, properties, sectionOverride: sectionMap[sectionKey] });
-    try {
-      const res = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1000, messages: [{ role: "user", content: prompt }] }),
-      });
-      const data = await res.json();
-      const raw = data.content?.find(b => b.type === "text")?.text || "";
-      const fresh = JSON.parse(raw.replace(/```json|```/g, "").trim());
-      setResult(prev => {
-        const next = { ...prev };
-        if (sectionKey === "parcel" && fresh.parcelFacts?.length) { next.parcelFacts = fresh.parcelFacts; if (fresh.spanish?.parcelFacts && next.spanish) next.spanish.parcelFacts = fresh.spanish.parcelFacts; }
-        if (sectionKey === "water" && fresh.waterRightsSummary) { next.waterRightsSummary = fresh.waterRightsSummary; if (fresh.spanish?.waterRightsSummary && next.spanish) next.spanish.waterRightsSummary = fresh.spanish.waterRightsSummary; }
-        if (sectionKey === "objections" && fresh.objections?.length) { next.objections = fresh.objections; if (fresh.spanish?.objections && next.spanish) next.spanish.objections = fresh.spanish.objections; }
-        if (sectionKey === "talking" && fresh.talkingPoints?.length) { next.talkingPoints = fresh.talkingPoints; if (fresh.spanish?.talkingPoints && next.spanish) next.spanish.talkingPoints = fresh.spanish.talkingPoints; }
-        return next;
-      });
-    } catch (err) { console.error(err); }
-    setRegenning(r => ({ ...r, [sectionKey]: false }));
-  };
-
-  const resetForm = () => {
-    setBuyerName(""); setSource("Facebook"); setLang("English"); setPersona("Unknown");
-    setAvailability("Available"); setDown(""); setTermPref("both");
-    setTourType("In-Person"); setAttending("Buyer only"); setNotes("");
-    setProperties([{ mode: "details", name: "", details: "", url: "", description: "" }]);
-    setBriefVisible(false); setResult(null); setHeroSnap(null);
-  };
-
-  const H = heroSnap;
-  const availChipStyle = H ? (
-    H.availability === "Available" ? { bg: "rgba(117,154,122,0.15)", color: "#4d6e52", border: "rgba(117,154,122,0.3)", dot: "#759A7A" }
-    : H.availability === "Under Contract" ? { bg: "rgba(234,179,8,0.15)", color: "#92400e", border: "rgba(234,179,8,0.3)", dot: "#eab308" }
-    : { bg: "rgba(220,38,38,0.12)", color: "#dc2626", border: "rgba(220,38,38,0.3)", dot: "#dc2626" }
-  ) : null;
-
-  const inputStyle = { width: "100%", fontFamily: "IBM Plex Sans, sans-serif", fontSize: 13, color: "#1C1C1C", background: "#F1F1F1", border: "1px solid #e2e2e2", borderRadius: 8, padding: "10px 12px", outline: "none", boxSizing: "border-box" };
-
-  return (
-    <div style={{ fontFamily: "IBM Plex Sans, sans-serif", background: "#F1F1F1", minHeight: "100vh" }}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
-        @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-        * { box-sizing: border-box; }
-        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #f1f1f1; } ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
-        .form-input:focus { border-color: #759A7A !important; background: white !important; }
-      `}</style>
-
-      {/* HEADER */}
-      <header style={{ background: "#1C1C1C", padding: "0 36px", display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, borderBottom: "2px solid #759A7A", position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <div style={{ width: 32, height: 32, background: "#759A7A", borderRadius: 6, display: "grid", placeItems: "center" }}>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          </div>
-          <div>
-            <div style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: 16, color: "white" }}>Mountains West Ranches</div>
-            <div style={{ fontSize: 11, color: "#777", fontFamily: "IBM Plex Mono, monospace", marginTop: 1 }}>Pre-Tour Buyer Prep Kit</div>
-          </div>
-        </div>
-        <span style={{ background: "#759A7A", color: "white", fontSize: 11, fontWeight: 500, padding: "4px 12px", borderRadius: 20, fontFamily: "IBM Plex Mono, monospace" }}>Land Specialists</span>
-      </header>
-
-      <div style={{ display: "grid", gridTemplateColumns: "380px 1fr", minHeight: "calc(100vh - 60px)" }}>
-
-        {/* FORM PANEL */}
-        <div style={{ background: "white", borderRight: "1px solid #e2e2e2", padding: "28px 24px", overflowY: "auto", height: "calc(100vh - 60px)", position: "sticky", top: 60 }}>
-          <div style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: 20, color: "#1C1C1C", marginBottom: 4 }}>Buyer Details</div>
-          <p style={{ fontSize: 12, color: "#666", marginBottom: 24, lineHeight: 1.5 }}>Fill in what you know before the tour. The land specialist gets a personalized brief with financing, objections, and talking points.</p>
-
-          {/* Buyer Name */}
-          <div style={{ marginBottom: 16 }}>
-            <FieldLabel>Buyer Name</FieldLabel>
-            <input className="form-input" style={inputStyle} type="text" placeholder="e.g. Marcus Rivera" value={buyerName} onChange={e => setBuyerName(e.target.value)} />
-          </div>
-
-          {/* Lead Source + Lang */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-            <div>
-              <FieldLabel>Lead Source</FieldLabel>
-              <Select value={source} onChange={setSource}>
-                <option value="Facebook">Facebook / Meta</option>
-                <option value="Google">Google Ads</option>
-                <option value="LandWatch">LandWatch</option>
-                <option value="Referral">Referral</option>
-                <option value="TikTok">TikTok</option>
-                <option value="Walk-in">Walk-in</option>
-              </Select>
-            </div>
-            <div>
-              <FieldLabel>Language Track</FieldLabel>
-              <Select value={lang} onChange={setLang}>
-                <option value="English">English (MWR)</option>
-                <option value="Spanish">Spanish (Terrenos)</option>
-              </Select>
-            </div>
-          </div>
-
-          {/* Persona */}
-          <div style={{ marginBottom: 16 }}>
-            <FieldLabel>Buyer Type / Persona</FieldLabel>
-            <Select value={persona} onChange={setPersona}>
-              <option value="Unknown">Unknown / Not sure yet</option>
-              <option value="Dave">Dave -- Self-sufficient homesteader</option>
-              <option value="Jim">Jim -- Retirement / Investment buyer</option>
-              <option value="Ryan">Ryan -- Hunter / Recreation buyer</option>
-              <option value="Sarah">Sarah -- Remote work / Off-grid lifestyle</option>
-              <option value="Frank">Frank -- Spanish-speaking buyer</option>
-            </Select>
-          </div>
-
-          {/* Properties */}
-          <div style={{ marginBottom: 16 }}>
-            <FieldLabel>Properties of Interest</FieldLabel>
-            <p style={{ fontSize: 11, color: "#666", marginBottom: 8, fontStyle: "italic", lineHeight: 1.5 }}>Add specific parcels, or describe what the buyer wants and let the specialist fill in the best fits.</p>
-            <div style={{ display: "grid", gap: 10 }}>
-              {properties.map((prop, i) => (
-                <PropertyEntry key={i} prop={prop} index={i} isFirst={i === 0} onRemove={() => removeProperty(i)} onChange={(k, v) => updateProperty(i, k, v)} />
-              ))}
-            </div>
-            <button onClick={addProperty} style={{ display: "flex", alignItems: "center", gap: 7, width: "100%", padding: "9px 12px", borderRadius: 8, border: "1px dashed #e2e2e2", background: "transparent", fontFamily: "IBM Plex Sans, sans-serif", fontSize: 12, fontWeight: 500, color: "#666", cursor: "pointer", marginTop: 10, transition: "all 0.15s" }}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = "#759A7A"; e.currentTarget.style.color = "#4d6e52"; e.currentTarget.style.background = "#eaf1eb"; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = "#e2e2e2"; e.currentTarget.style.color = "#666"; e.currentTarget.style.background = "transparent"; }}>
-              <IconPlus /> Add another property
-            </button>
-          </div>
-
-          {/* Availability */}
-          <div style={{ marginBottom: 16 }}>
-            <FieldLabel>Parcel Availability</FieldLabel>
-            <ToggleGroup colorize value={availability} onChange={setAvailability} options={[{ value: "Available", label: "Available", color: "green" }, { value: "Under Contract", label: "Under Contract", color: "amber" }, { value: "Last One in Subdivision", label: "Last One", color: "red" }]} />
-          </div>
-
-          {/* Down + Term */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-            <div>
-              <FieldLabel>Estimated Down Payment</FieldLabel>
-              <input className="form-input" style={inputStyle} type="number" placeholder="e.g. 3000" min="1000" value={down} onChange={e => setDown(e.target.value)} />
-            </div>
-            <div>
-              <FieldLabel>Preferred Term</FieldLabel>
-              <Select value={termPref} onChange={setTermPref}>
-                <option value="both">Show Both (10 &amp; 15 yr)</option>
-                <option value="10">10 Years</option>
-                <option value="15">15 Years</option>
-              </Select>
-            </div>
-          </div>
-
-          {/* Tour Type + Attending */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 16 }}>
-            <div>
-              <FieldLabel>Tour Type</FieldLabel>
-              <ToggleGroup value={tourType} onChange={setTourType} options={[{ value: "In-Person", label: "In-Person" }, { value: "Virtual", label: "Virtual" }, { value: "Self-Guided", label: "Self" }]} />
-            </div>
-            <div>
-              <FieldLabel>Who's Attending</FieldLabel>
-              <ToggleGroup value={attending} onChange={setAttending} options={[{ value: "Buyer only", label: "Solo" }, { value: "Buyer + spouse", label: "+ Spouse" }, { value: "Buyer + family", label: "Family" }]} />
-            </div>
-          </div>
-
-          {/* Notes */}
-          <div style={{ marginBottom: 16 }}>
-            <FieldLabel>Notes on buyer (optional)</FieldLabel>
-            <textarea className="form-input" style={{ ...inputStyle, height: 72, resize: "vertical" }} placeholder="e.g. Has land already, wants more acreage. Mentioned farming. Spouse very involved in decision." value={notes} onChange={e => setNotes(e.target.value)} />
-          </div>
-
-          <hr style={{ border: "none", borderTop: "1px solid #e2e2e2", margin: "20px 0" }} />
-
-          <button onClick={generate} disabled={loading} style={{ width: "100%", background: loading ? "#aaa" : "#1C1C1C", color: "white", border: "none", padding: 14, borderRadius: 10, fontFamily: "IBM Plex Sans, sans-serif", fontSize: 14, fontWeight: 600, cursor: loading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-            {loading && <span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", animation: "spin 0.7s linear infinite", display: "inline-block" }} />}
-            {loading ? "Generating..." : "Generate Prep Kit"}
-          </button>
-          <span onClick={resetForm} style={{ display: "block", textAlign: "center", marginTop: 12, fontSize: 12, color: "#666", cursor: "pointer", textDecoration: "underline" }}>Clear form</span>
-        </div>
-
-        {/* OUTPUT PANEL */}
-        <div style={{ padding: "32px 36px", overflowY: "auto" }}>
-          {!briefVisible ? (
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", minHeight: 400, textAlign: "center", color: "#666" }}>
-              <div style={{ width: 64, height: 64, background: "white", borderRadius: 16, border: "1px solid #e2e2e2", display: "grid", placeItems: "center", marginBottom: 16 }}>
-                <IconFile />
-              </div>
-              <div style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: 20, color: "#1C1C1C", marginBottom: 6 }}>Ready when you are</div>
-              <p style={{ fontSize: 13, lineHeight: 1.6, maxWidth: 320 }}>Fill in the buyer details and click Generate. The land specialist gets a fully personalized one-page brief in seconds.</p>
-            </div>
-          ) : (
-            <div style={{ maxWidth: 840 }}>
-              {/* Topbar */}
-              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexWrap: "wrap", gap: 10 }}>
-                <div style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: 22, color: "#1C1C1C" }}>Prep Kit -- {H?.buyerName}</div>
-                <div style={{ display: "flex", gap: 8 }}>
-                  <button onClick={() => window.print()} style={{ fontSize: 12, fontWeight: 500, padding: "7px 14px", borderRadius: 7, cursor: "pointer", border: "1px solid #e2e2e2", background: "white", color: "#1C1C1C", fontFamily: "IBM Plex Sans, sans-serif" }}>Print / Save PDF</button>
-                  <button onClick={generate} style={{ fontSize: 12, fontWeight: 500, padding: "7px 14px", borderRadius: 7, cursor: "pointer", border: "1px solid #759A7A", background: "#759A7A", color: "white", fontFamily: "IBM Plex Sans, sans-serif" }}>Regenerate All</button>
-                </div>
-              </div>
-
-              <div style={{ background: "white", borderRadius: 14, border: "1px solid #e2e2e2", overflow: "hidden", boxShadow: "0 2px 20px rgba(0,0,0,0.06)" }}>
-
-                {/* Spanish toggle bar */}
-                {isSpanish && result && !result.error && (
-                  <div style={{ background: "#fffbeb", borderBottom: "1px solid #fde68a", padding: "10px 16px", display: "flex", alignItems: "center", gap: 12 }}>
-                    <span style={{ fontSize: 12, color: "#92400e", fontWeight: 500 }}>Bilingual brief ready:</span>
-                    <div style={{ display: "flex", border: "1px solid #fde68a", borderRadius: 6, overflow: "hidden" }}>
-                      {[{ v: "en", l: "English" }, { v: "es", l: "Espanol" }].map(({ v, l }) => (
-                        <button key={v} onClick={() => setCurrentLang(v)} style={{ padding: "5px 14px", fontSize: 12, fontFamily: "IBM Plex Sans, sans-serif", fontWeight: 500, background: currentLang === v ? "#92400e" : "transparent", color: currentLang === v ? "white" : "#92400e", border: "none", cursor: "pointer", transition: "all 0.15s" }}>{l}</button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* HERO */}
-                {H && (
-                  <div style={{ background: "#1C1C1C", padding: "28px 32px", position: "relative", overflow: "hidden" }}>
-                    <div style={{ position: "absolute", top: 0, right: 0, bottom: 0, width: 6, background: "#759A7A" }} />
-                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 16, marginBottom: 16 }}>
-                      <div>
-                        <div style={{ fontFamily: "Playfair Display, Georgia, serif", fontSize: 28, color: "white", lineHeight: 1.1 }}>{H.buyerName}</div>
-                        <div style={{ display: "flex", gap: 7, flexWrap: "wrap", marginTop: 8 }}>
-                          {[H.lang, H.source, H.persona !== "Unknown" ? H.persona : null, H.tourType].filter(Boolean).map((chip, i) => (
-                            <span key={i} style={{ fontSize: 11, fontFamily: "IBM Plex Mono, monospace", padding: "3px 10px", borderRadius: 20, background: (chip === H.lang && H.lang === "Spanish") ? "#759A7A" : "rgba(255,255,255,0.1)", color: (chip === H.lang && H.lang === "Spanish") ? "white" : "rgba(255,255,255,0.7)", border: `1px solid ${(chip === H.lang && H.lang === "Spanish") ? "#759A7A" : "rgba(255,255,255,0.12)"}` }}>{chip}</span>
-                          ))}
-                          {availChipStyle && (
-                            <span style={{ fontSize: 10, fontFamily: "IBM Plex Mono, monospace", padding: "3px 10px", borderRadius: 20, background: availChipStyle.bg, color: availChipStyle.color, border: `1px solid ${availChipStyle.border}`, display: "inline-flex", alignItems: "center", gap: 5 }}>
-                              <span style={{ width: 6, height: 6, borderRadius: "50%", background: availChipStyle.dot, flexShrink: 0 }} />{H.availability}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      {/* Readiness badge */}
-                      <div style={{ position: "relative" }}>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 14px", borderRadius: 20, fontSize: 12, fontWeight: 600, fontFamily: "IBM Plex Mono, monospace", background: rc.bg, color: rc.color, border: `1px solid ${rc.border}`, whiteSpace: "nowrap" }}>
-                          <span style={{ width: 7, height: 7, borderRadius: "50%", background: rc.dot, flexShrink: 0, animation: readiness !== "cold" ? "pulse 1s ease-in-out infinite" : "none" }} />
-                          Buyer Readiness: {READINESS_LABELS[readiness]}
-                        </div>
-                        <div style={{ marginTop: 4, fontSize: 10, color: "rgba(255,255,255,0.45)", fontFamily: "IBM Plex Mono, monospace", maxWidth: 200, lineHeight: 1.4, textAlign: "right" }}>{READINESS_TIPS[readiness]}</div>
-                      </div>
-                    </div>
-                    <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
-                      {[["Properties", H.propNames], ["Down Payment", "$" + H.down.toLocaleString()], ["Attending", H.attending]].map(([label, val]) => (
-                        <div key={label}>
-                          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.45)", fontFamily: "IBM Plex Mono, monospace", textTransform: "uppercase", letterSpacing: "0.08em" }}>{label}</div>
-                          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.85)", fontWeight: 500, marginTop: 2 }}>{val}</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* BODY */}
-                <div style={{ padding: "28px 32px", display: "grid", gap: 24 }}>
-
-                  {/* Financing */}
-                  <SectionBlock icon={<IconDollar />} title="Financing Breakdown">
-                    {finData ? (
-                      <>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 12, marginBottom: 12 }}>
-                          {[["Purchase Price", fmtI(finData.price)], ["Down Payment", fmtI(finData.down)], ["Amount Financed", fmtI(finData.remaining)]].map(([l, v]) => (
-                            <div key={l} style={{ background: "#F1F1F1", borderRadius: 8, padding: "12px 14px", textAlign: "center" }}>
-                              <div style={{ fontSize: 10, color: "#666", textTransform: "uppercase", letterSpacing: "0.07em", fontFamily: "IBM Plex Mono, monospace", marginBottom: 4 }}>{l}</div>
-                              <div style={{ fontSize: 18, fontWeight: 600, color: "#1C1C1C", fontFamily: "IBM Plex Mono, monospace" }}>{v}</div>
-                            </div>
-                          ))}
-                        </div>
-                        <div style={{ display: "grid", gridTemplateColumns: finData.terms.length === 2 ? "1fr 1fr" : "1fr 1fr", gap: 12, marginBottom: 12 }}>
-                          {finData.terms.map(yr => {
-                            const mo = calcMonthly(finData.price, finData.down, yr);
-                            const total = finData.down + mo * yr * 12;
-                            return (
-                              <div key={yr} style={{ background: "#eaf1eb", borderRadius: 8, padding: "12px 14px", textAlign: "center" }}>
-                                <div style={{ fontSize: 10, color: "#4d6e52", textTransform: "uppercase", letterSpacing: "0.07em", fontFamily: "IBM Plex Mono, monospace", marginBottom: 4 }}>{yr}-Year Term</div>
-                                <div style={{ fontSize: 18, fontWeight: 600, color: "#4d6e52", fontFamily: "IBM Plex Mono, monospace" }}>{fmtD(mo)}/mo</div>
-                                <div style={{ fontSize: 10, color: "#666", marginTop: 2 }}>Total paid: {fmtI(total)}</div>
-                              </div>
-                            );
-                          })}
-                          {finData.terms.length === 1 && <div />}
-                        </div>
-                        <div style={{ fontSize: 12, color: "#666", background: "#F1F1F1", borderRadius: 6, padding: "8px 12px", lineHeight: 1.5 }}>
-                          No credit check required. $1,000 minimum down. Owner financing through MWR. {downNum >= 1000 ? "Buyer's down payment qualifies." : "Minimum $1,000 down required."}
-                        </div>
-                      </>
-                    ) : (
-                      <div style={{ fontSize: 12, color: "#666", background: "#F1F1F1", borderRadius: 6, padding: "8px 12px", lineHeight: 1.5 }}>
-                        Include a price in a property's details field to see the full financing breakdown. Down payment entered: ${downNum.toLocaleString()}. Minimum down: $1,000. No credit check required.
-                      </div>
-                    )}
-                  </SectionBlock>
-
-                  {/* Parcel Overview */}
-                  <SectionBlock icon={<IconHome />} title="Parcel Overview" onRegen={() => regenSection("parcel")} regenning={regenning.parcel}>
-                    {loading || (!result && briefVisible) ? <Skeleton /> : result?.error ? <div style={{ color: "#c0392b", fontSize: 13 }}>Error generating content. Please try again.</div> : result ? (
-                      <ul style={{ margin: "0 0 0 18px", padding: 0 }}>
-                        {(getContent("parcelFacts") || []).map((f, i) => <li key={i} style={{ fontSize: 13, lineHeight: 1.7, color: "#1C1C1C", marginBottom: 5 }}>{f}</li>)}
-                      </ul>
-                    ) : null}
-                  </SectionBlock>
-
-                  {/* Water Rights */}
-                  <SectionBlock icon={<IconDroplet />} title="Water Rights Note" onRegen={() => regenSection("water")} regenning={regenning.water}>
-                    {loading || (!result && briefVisible) ? <Skeleton /> : result?.error ? <div style={{ color: "#c0392b", fontSize: 13 }}>Error generating content. Please try again.</div> : result ? (
-                      <>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#e8f4fb", color: "#1a5f8a", border: "1px solid #b8d8ef", borderRadius: 6, padding: "5px 12px", fontSize: 12, fontWeight: 500, marginBottom: 10 }}>
-                          <IconDroplet /> A5 Agricultural Zone
-                        </div>
-                        <p style={{ fontSize: 13, lineHeight: 1.7, color: "#1C1C1C" }}>{getContent("waterRightsSummary")}</p>
-                      </>
-                    ) : null}
-                  </SectionBlock>
-
-                  {/* Objections */}
-                  <SectionBlock icon={<IconAlert />} title="Likely Objections" onRegen={() => regenSection("objections")} regenning={regenning.objections}>
-                    {loading || (!result && briefVisible) ? <Skeleton /> : result?.error ? <div style={{ color: "#c0392b", fontSize: 13 }}>Error generating content. Please try again.</div> : result ? (
-                      <div style={{ display: "grid", gap: 10 }}>
-                        {(getContent("objections") || []).map((obj, i) => <ObjectionItem key={i} obj={obj} idx={i} isSpanish={currentLang === "es"} />)}
-                      </div>
-                    ) : null}
-                  </SectionBlock>
-
-                  {/* Talking Points */}
-                  <SectionBlock icon={<IconChat />} title="Talking Points for the Land Specialist" onRegen={() => regenSection("talking")} regenning={regenning.talking}>
-                    {loading || (!result && briefVisible) ? <Skeleton /> : result?.error ? <div style={{ color: "#c0392b", fontSize: 13 }}>Error generating content. Please try again.</div> : result ? (
-                      <div style={{ display: "grid", gap: 8 }}>
-                        {(getContent("talkingPoints") || []).map((tp, i) => <TalkingPointRow key={i} text={tp} />)}
-                      </div>
-                    ) : null}
-                  </SectionBlock>
-
-                </div>
-
-                {/* FOOTER */}
-                {generatedAt && (
-                  <div style={{ padding: "16px 32px", borderTop: "1px solid #e2e2e2", background: "#F1F1F1", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
-                    <div style={{ fontSize: 11, color: "#666", fontFamily: "IBM Plex Mono, monospace" }}>
-                      Generated <strong style={{ color: "#1C1C1C" }}>{generatedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</strong> at {generatedAt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                      <span style={{ fontSize: 11, color: "#666", fontFamily: "IBM Plex Mono, monospace", whiteSpace: "nowrap" }}>Prepared by:</span>
-                      <div style={{ position: "relative" }}>
-                        <select value={preparedBy} onChange={e => setPreparedBy(e.target.value)} style={{ fontFamily: "IBM Plex Mono, monospace", fontSize: 11, color: "#1C1C1C", border: "1px solid #e2e2e2", background: "white", borderRadius: 5, padding: "4px 24px 4px 8px", appearance: "none", cursor: "pointer" }}>
-                          <option>Kelly</option><option>Shay</option><option>Silvia</option>
-                        </select>
-                        <div style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }}>
-                          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#666" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+  });
+  return out;
 }
+
+function propBlock(props) {
+  if (!props.length) return 'No specific properties listed -- use buyer notes to recommend best fits.';
+  return props.map(function(p) {
+    var ml = p.mode === 'Paste URL' ? 'URL' : p.mode === 'Paste description' ? 'Description' : 'Details';
+    return 'Property ' + p.num + ': ' + p.name + '\n  [' + ml + ']: ' + (p.content || 'No additional info provided');
+  }).join('\n\n');
+}
+
+function propNames(props) {
+  var n = props.map(function(p) { return p.name; }).filter(Boolean);
+  return n.length ? n.join(', ') : 'To be matched';
+}
+
+// ---- TOGGLES ----
+window.setToggle = function(groupId, btn, value, colorClass) {
+  TV[groupId] = value;
+  g(groupId).querySelectorAll('button').forEach(function(b) {
+    b.classList.remove('active', 'g', 'a', 'r');
+  });
+  btn.classList.add('active');
+  if (colorClass) btn.classList.add(colorClass);
+};
+
+window.onLangChange = function() {
+  if (g('f-lang').value !== 'Spanish') g('lang-bar').classList.remove('visible');
+};
+
+// ---- READINESS ----
+function computeReadiness() {
+  var src = g('f-source').value;
+  var down = parseFloat(g('f-down').value) || 0;
+  var props = collectProps();
+  var price = null;
+  props.forEach(function(p) {
+    var m = (p.content + ' ' + p.name).match(/\$?([\d,]+)/);
+    if (m && !price) price = parseFloat(m[1].replace(/,/g, ''));
+  });
+  var pct = price ? down / price : 0;
+  var high = ['Referral','LandWatch'].indexOf(src) >= 0;
+  var mid = ['Facebook','Google','TikTok'].indexOf(src) >= 0;
+  if (pct >= 0.1 && high) return 'veryhot';
+  if (pct >= 0.1 && mid) return 'hot';
+  if (pct >= 0.05 || high) return 'warm';
+  return 'cold';
+}
+
+function renderReadiness() {
+  var score = computeReadiness();
+  var wrap = clr('out-readiness');
+  var badge = mk('div', 'readiness-badge ' + score);
+  var dot = mk('div', 'badge-dot');
+  badge.appendChild(dot);
+  badge.appendChild(document.createTextNode(' Buyer Readiness: ' + R_LABELS[score]));
+  wrap.appendChild(badge);
+  g('out-readiness-tip').textContent = R_TIPS[score];
+}
+
+// ---- FINANCING ----
+function calcMo(p, d, y) {
+  var loan = p - d; if (loan <= 0) return 0;
+  var r = RATE / 12, n = y * 12;
+  return loan * (r * Math.pow(1+r,n)) / (Math.pow(1+r,n) - 1);
+}
+function fmtD(n) { return '$' + n.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2}); }
+function fmtI(n) { return '$' + Math.round(n).toLocaleString('en-US'); }
+function parsePx(str) {
+  var m = (str || '').match(/\$?([\d,]+)/);
+  return m ? parseFloat(m[1].replace(/,/g,'')) : null;
+}
+
+function mkFinCell(label, val, sub, accent) {
+  var cell = mk('div', 'fin-cell' + (accent ? ' accent' : ''));
+  cell.appendChild(mk('div', 'fin-lbl', label));
+  cell.appendChild(mk('div', 'fin-val', val));
+  if (sub) cell.appendChild(mk('div', 'fin-sub', sub));
+  return cell;
+}
+
+function renderFinancing(price, down, termPref) {
+  var wrap = clr('out-financing');
+  if (!price || !down) {
+    wrap.appendChild(mk('div', 'fin-note', 'Include a price in a property details field to see the full financing breakdown. Down payment entered: ' + fmtI(down) + '. Minimum down: $1,000. No credit check required.'));
+    return;
+  }
+  var remaining = price - down;
+  var g1 = mk('div', 'fin-grid');
+  g1.appendChild(mkFinCell('Purchase Price', fmtI(price)));
+  g1.appendChild(mkFinCell('Down Payment', fmtI(down)));
+  g1.appendChild(mkFinCell('Amount Financed', fmtI(remaining)));
+  wrap.appendChild(g1);
+  var terms = termPref === 'both' ? [10,15] : [parseInt(termPref)];
+  var g2 = mk('div', 'fin-grid two');
+  terms.forEach(function(yr) {
+    var mo = calcMo(price, down, yr);
+    var total = down + mo * yr * 12;
+    g2.appendChild(mkFinCell(yr + '-Year Term', fmtD(mo) + '/mo', 'Total paid: ' + fmtI(total), true));
+  });
+  if (terms.length === 1) g2.appendChild(mk('div'));
+  wrap.appendChild(g2);
+  wrap.appendChild(mk('div', 'fin-note', 'No credit check required. $1,000 minimum down. Owner financing through MWR. ' + (down >= 1000 ? "Buyer's down payment qualifies." : 'Minimum $1,000 down required.')));
+}
+
+// ---- SKELETON ----
+function showSkel(id) {
+  var e = clr(id);
+  var ind = mk('div', 'stream-ind');
+  ind.appendChild(mk('span', 'stream-dot'));
+  ind.appendChild(document.createTextNode(' Generating...'));
+  e.appendChild(ind);
+  [90, 75, 82].forEach(function(w) {
+    var sk = mk('div', 'skeleton'); sk.style.width = w + '%'; e.appendChild(sk);
+  });
+}
+
+// ---- GET DATA ----
+function getD(key) {
+  if (!lastResult) return null;
+  if (currentLang === 'es' && lastResult.spanish) return lastResult.spanish[key];
+  return lastResult[key];
+}
+
+// ---- RENDER SECTIONS ----
+function renderParcel() {
+  var e = clr('out-parcel');
+  var facts = getD('parcelFacts') || [];
+  var ul = document.createElement('ul'); ul.style.cssText = 'margin:0 0 0 18px;';
+  facts.forEach(function(f) {
+    var li = mk('li', '', f);
+    li.style.cssText = 'font-size:13px;line-height:1.7;color:#1C1C1C;margin-bottom:5px;';
+    ul.appendChild(li);
+  });
+  e.appendChild(ul);
+}
+
+function renderWater() {
+  var e = clr('out-water');
+  var summary = getD('waterRightsSummary') || '';
+  var badge = mk('div', 'water-badge');
+  var svg = mkSvg(); svg.appendChild(mkSvgEl('path', {d:'M12 2.69l5.66 5.66a8 8 0 11-11.31 0z'}));
+  badge.appendChild(svg);
+  badge.appendChild(document.createTextNode(' A5 Agricultural Zone'));
+  var p = mk('p', '', summary);
+  p.style.cssText = 'font-size:13px;line-height:1.7;color:#1C1C1C;margin-top:10px;';
+  e.appendChild(badge); e.appendChild(p);
+}
+
+function renderObjections() {
+  var e = clr('out-objections');
+  var objs = getD('objections') || [];
+  var isEs = currentLang === 'es';
+  var list = mk('div', 'obj-list');
+  objs.forEach(function(obj, i) {
+    var item = mk('div', 'obj-item');
+    var head = mk('div', 'obj-head');
+    head.appendChild(mk('div', 'obj-num', String(i+1)));
+    head.appendChild(document.createTextNode(obj.title));
+    var body = mk('div', 'obj-body');
+    body.appendChild(mk('div', 'obj-lbl', isEs ? 'Lo que podrian decir' : 'What they might say'));
+    body.appendChild(mk('div', 'obj-text', obj.objection));
+    var resp = mk('div', 'resp-block');
+    resp.appendChild(mk('div', 'obj-lbl', isEs ? 'Respuesta sugerida' : 'Suggested response'));
+    resp.appendChild(mk('div', 'obj-text', obj.response));
+    body.appendChild(resp);
+    item.appendChild(head); item.appendChild(body);
+    list.appendChild(item);
+  });
+  e.appendChild(list);
+}
+
+function renderTalkingPoints() {
+  var e = clr('out-talking');
+  var points = getD('talkingPoints') || [];
+  var list = mk('div', 'tp-list');
+  points.forEach(function(tp) {
+    var item = mk('div', 'tp-item');
+    var bullet = mk('div', 'tp-bullet');
+    var svgB = mkSvg(); svgB.appendChild(mkSvgEl('polyline', {points:'20 6 9 17 4 12'}));
+    bullet.appendChild(svgB);
+    var text = mk('div', 'tp-text', tp);
+    var copyBtn = mk('button', 'tp-copy'); copyBtn.title = 'Copy';
+    copyBtn.appendChild(icoCopy());
+    (function(tpText, btn) {
+      btn.onclick = function() {
+        navigator.clipboard.writeText(tpText).then(function() {
+          btn.classList.add('copied');
+          while (btn.firstChild) btn.removeChild(btn.firstChild);
+          btn.appendChild(icoCheck());
+          setTimeout(function() {
+            btn.classList.remove('copied');
+            while (btn.firstChild) btn.removeChild(btn.firstChild);
+            btn.appendChild(icoCopy());
+          }, 1800);
+        });
+      };
+    })(tp, copyBtn);
+    item.appendChild(bullet); item.appendChild(text); item.appendChild(copyBtn);
+    list.appendChild(item);
+  });
+  e.appendChild(list);
+}
+
+function renderAll() {
+  renderParcel(); renderWater(); renderObjections(); renderTalkingPoints();
+}
+
+window.switchLang = function(lang) {
+  currentLang = lang;
+  g('lb-en').classList.toggle('active', lang === 'en');
+  g('lb-es').classList.toggle('active', lang === 'es');
+  if (lastResult) renderAll();
+};
+
+// ---- PROMPT ----
+function buildPrompt(sectionOverride) {
+  var name = g('f-name').value.trim();
+  var source = g('f-source').value;
+  var lang = g('f-lang').value;
+  var down = parseFloat(g('f-down').value) || 0;
+  var notes = g('f-notes').value.trim();
+  var persona = g('f-persona').value;
+  var availability = TV['tg-avail'];
+  var tourType = TV['tg-tour'];
+  var attending = TV['tg-attend'];
+  var isSpanish = lang === 'Spanish';
+  var itin = isSpanish ? 'ITIN accepted (no SSN required). ' : '';
+  var props = collectProps();
+
+  var availCtx = availability === 'Available'
+    ? 'The parcel is currently available.'
+    : availability === 'Under Contract'
+    ? 'This parcel is under contract. Focus on comparable available parcels or waitlist options.'
+    : 'This is the last parcel in this subdivision. Use appropriate urgency and scarcity language.';
+
+  var tourCtx = tourType === 'Virtual'
+    ? 'Virtual tour. Specialist should rely more on descriptions and data, and build rapport remotely.'
+    : tourType === 'Self-Guided'
+    ? 'Self-guided tour. Specialist not on-site. Talking points should work as a printed or texted guide.'
+    : 'In-person tour at the property.';
+
+  var attendCtx = attending === 'Buyer + spouse'
+    ? "Buyer's spouse is attending. Include spouse-specific social proof. Both partners need to feel confident."
+    : attending === 'Buyer + family'
+    ? 'Buyer is bringing family. Acknowledge multi-generational appeal, legacy, outdoor experiences for kids.'
+    : 'Only the buyer is attending.';
+
+  var sectionInstr = sectionOverride
+    ? 'Generate ONLY the "' + sectionOverride + '" section. Return the same JSON structure with only that key populated; other keys should be empty arrays or empty strings.'
+    : 'Generate all sections.';
+
+  var spanishSection = isSpanish
+    ? ',\n  "spanish": {\n    "parcelFacts": ["hecho 1","hecho 2","hecho 3","hecho 4"],\n    "waterRightsSummary": "Resumen sobre derechos de agua A5 en Duchesne County...",\n    "objections": [{"title":"Etiqueta","objection":"Lo que podria decir el comprador","response":"Respuesta del especialista"},{"title":"Etiqueta","objection":"Segunda objecion","response":"Respuesta"},{"title":"Etiqueta","objection":"Tercera objecion","response":"Respuesta"}],\n    "talkingPoints": ["Punto 1 -- mencione que ITIN es aceptado","Punto 2","Punto 3","Punto 4","Punto 5"]\n  }'
+    : '';
+
+  return 'You are preparing a pre-tour buyer prep kit for a land specialist at Mountains West Ranches (MWR) in Duchesne County, Utah. MWR sells A5-zoned agricultural parcels with owner financing (no credit check, $1,000 min down, 10 or 15-year terms at 9.9% interest). ' + itin + '\n\n'
+    + 'Buyer: ' + name + '\nLead source: ' + source + '\nLanguage track: ' + lang + '\nDown payment: $' + down.toLocaleString() + '\nBuyer persona: ' + persona + '\nParcel availability: ' + availability + '\nTour type: ' + tourType + '\nWho is attending: ' + attending + '\n'
+    + (notes ? 'Additional notes: ' + notes + '\n' : '')
+    + '\nPROPERTIES OF INTEREST:\n' + propBlock(props)
+    + '\n\nPERSONA CONTEXT:\n' + (PERSONA[persona] || PERSONA.Unknown)
+    + '\n\nAVAILABILITY CONTEXT: ' + availCtx
+    + '\nTOUR CONTEXT: ' + tourCtx
+    + '\nATTENDING CONTEXT: ' + attendCtx
+    + '\n\n' + sectionInstr
+    + '\n\nReturn ONLY valid JSON with exactly these keys. No markdown, no preamble, no em dashes anywhere:\n\n'
+    + '{\n  "parcelFacts": ["fact 1 -- specific and useful for the land specialist on tour","fact 2","fact 3","fact 4"],\n'
+    + '  "waterRightsSummary": "2-3 sentences about water rights for A5-zoned parcels in Duchesne County. Cover stock water rights, culinary water access, and what buyers should know.",\n'
+    + '  "objections": [\n    {"title":"Short label","objection":"Likely buyer concern based on lead source AND persona","response":"Land specialist response -- warm, confident, factual. 2-3 sentences. No em dashes."},\n    {"title":"Short label","objection":"Second concern","response":"Response"},\n    {"title":"Short label","objection":"Third concern","response":"Response"}\n  ],\n'
+    + '  "talkingPoints": ["Point 1 tailored to persona, source, tour type, and who is attending","Point 2","Point 3","Point 4","Point 5"]'
+    + spanishSection
+    + '\n}\n\n'
+    + 'Rules:\n- No em dashes -- use commas, colons, or periods instead\n'
+    + '- ' + (isSpanish ? 'Spanish section must include ITIN accepted language and be fully in Spanish. English section must NOT include ITIN references.' : 'English only. Never reference ITIN or SSN.') + '\n'
+    + '- Objections must reflect BOTH the lead source behavior AND the persona motivations\n'
+    + '- Reference specific property names/details where possible\n'
+    + '- Talking points must build rapport and move toward a close -- not just describe land\n'
+    + (availability !== 'Available' ? '- Reflect the availability status in talking points.\n' : '')
+    + (tourType === 'Virtual' ? '- Include virtual-specific pacing notes in talking points.\n' : '')
+    + (attending === 'Buyer + spouse' ? '- At least one talking point should address the spouse.\n' : '')
+    + '- No generic filler -- every sentence must be immediately useful on tour';
+}
+
+// ---- REGEN SECTION ----
+window.regenSection = async function(sectionKey, outId, btnId) {
+  if (!lastResult) return;
+  var btn = g(btnId);
+  btn.classList.add('spinning');
+  showSkel(outId);
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:buildPrompt(sectionKey)}]})
+    });
+    var data = await res.json();
+    var rawBlock = (data.content || []).find(function(b) { return b.type === 'text'; });
+    var fresh = JSON.parse((rawBlock ? rawBlock.text : '').replace(/```json|```/g,'').trim());
+    if (sectionKey === 'parcelFacts' && fresh.parcelFacts && fresh.parcelFacts.length) {
+      lastResult.parcelFacts = fresh.parcelFacts;
+      if (fresh.spanish && lastResult.spanish) lastResult.spanish.parcelFacts = fresh.spanish.parcelFacts || lastResult.spanish.parcelFacts;
+    }
+    if (sectionKey === 'waterRightsSummary' && fresh.waterRightsSummary) {
+      lastResult.waterRightsSummary = fresh.waterRightsSummary;
+      if (fresh.spanish && lastResult.spanish) lastResult.spanish.waterRightsSummary = fresh.spanish.waterRightsSummary || lastResult.spanish.waterRightsSummary;
+    }
+    if (sectionKey === 'objections' && fresh.objections && fresh.objections.length) {
+      lastResult.objections = fresh.objections;
+      if (fresh.spanish && lastResult.spanish) lastResult.spanish.objections = fresh.spanish.objections || lastResult.spanish.objections;
+    }
+    if (sectionKey === 'talkingPoints' && fresh.talkingPoints && fresh.talkingPoints.length) {
+      lastResult.talkingPoints = fresh.talkingPoints;
+      if (fresh.spanish && lastResult.spanish) lastResult.spanish.talkingPoints = fresh.spanish.talkingPoints || lastResult.spanish.talkingPoints;
+    }
+    if (sectionKey === 'parcelFacts') renderParcel();
+    else if (sectionKey === 'waterRightsSummary') renderWater();
+    else if (sectionKey === 'objections') renderObjections();
+    else if (sectionKey === 'talkingPoints') renderTalkingPoints();
+  } catch(err) {
+    var errEl = clr(outId);
+    var msg = mk('div', '', 'Error regenerating. Please try again.');
+    msg.style.cssText = 'color:#c0392b;font-size:13px;padding:8px 0;';
+    errEl.appendChild(msg);
+    console.error(err);
+  }
+  btn.classList.remove('spinning');
+};
+
+// ---- MAIN GENERATE ----
+window.generateBrief = async function() {
+  var name = g('f-name').value.trim();
+  var source = g('f-source').value;
+  var lang = g('f-lang').value;
+  var down = parseFloat(g('f-down').value) || 0;
+  var termPref = g('f-term').value;
+  var persona = g('f-persona').value;
+  var availability = TV['tg-avail'];
+  var tourType = TV['tg-tour'];
+  var attending = TV['tg-attend'];
+  var isSpanish = lang === 'Spanish';
+  var props = collectProps();
+
+  if (!name) { alert('Please enter the buyer name.'); return; }
+  if (down < 1000) { alert('Minimum down payment is $1,000.'); return; }
+
+  var btn = g('gen-btn');
+  btn.disabled = true;
+  btn.classList.add('loading');
+  g('gen-btn-text').textContent = 'Generating...';
+
+  g('empty-state').style.display = 'none';
+  g('brief-output').classList.add('visible');
+
+  currentLang = 'en';
+  g('lb-en').classList.add('active');
+  g('lb-es').classList.remove('active');
+  if (isSpanish) g('lang-bar').classList.add('visible');
+  else g('lang-bar').classList.remove('visible');
+
+  g('brief-title').textContent = 'Prep Kit -- ' + name;
+  g('out-name').textContent = name;
+
+  // Chips
+  var chipsEl = clr('out-chips');
+  [lang, source, persona !== 'Unknown' ? persona : null, tourType].filter(Boolean).forEach(function(c) {
+    var span = mk('span', 'chip' + (c === lang && isSpanish ? ' hi' : ''), c);
+    chipsEl.appendChild(span);
+  });
+  var aClass = availability === 'Available' ? 'avail-ok' : availability === 'Under Contract' ? 'avail-uc' : 'avail-last';
+  var aDotColor = availability === 'Available' ? '#759A7A' : availability === 'Under Contract' ? '#eab308' : '#dc2626';
+  var aSpan = mk('span', 'chip ' + aClass);
+  var aDot = mk('span', 'avail-dot'); aDot.style.background = aDotColor;
+  aSpan.appendChild(aDot); aSpan.appendChild(document.createTextNode(availability));
+  chipsEl.appendChild(aSpan);
+
+  // Stats
+  var statsEl = clr('out-stats');
+  [['Properties', propNames(props)], ['Down Payment', '$' + down.toLocaleString()], ['Attending', attending]].forEach(function(pair) {
+    var div = mk('div');
+    div.appendChild(mk('div', 'stat-label', pair[0]));
+    div.appendChild(mk('div', 'stat-val', pair[1]));
+    statsEl.appendChild(div);
+  });
+
+  renderReadiness();
+
+  var priceGuess = null;
+  props.forEach(function(p) { if (!priceGuess) priceGuess = parsePx(p.content) || parsePx(p.name); });
+  renderFinancing(priceGuess, down, termPref);
+
+  ['out-parcel','out-water','out-objections','out-talking'].forEach(showSkel);
+
+  var now = new Date();
+  var tsEl = clr('out-timestamp');
+  tsEl.appendChild(document.createTextNode('Generated '));
+  var strong = mk('strong', '', now.toLocaleDateString('en-US', {month:'short',day:'numeric',year:'numeric'}));
+  tsEl.appendChild(strong);
+  tsEl.appendChild(document.createTextNode(' at ' + now.toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit'})));
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:isSpanish?2200:1600,messages:[{role:'user',content:buildPrompt(null)}]})
+    });
+    var data = await res.json();
+    var rawBlock = (data.content || []).find(function(b) { return b.type === 'text'; });
+    lastResult = JSON.parse((rawBlock ? rawBlock.text : '').replace(/```json|```/g,'').trim());
+    renderAll();
+  } catch(err) {
+    ['out-parcel','out-water','out-objections','out-talking'].forEach(function(id) {
+      var e = clr(id);
+      var msg = mk('div', '', 'Error generating content. Please try again.');
+      msg.style.cssText = 'color:#c0392b;font-size:13px;padding:8px 0;';
+      e.appendChild(msg);
+    });
+    console.error(err);
+  }
+
+  btn.disabled = false;
+  btn.classList.remove('loading');
+  g('gen-btn-text').textContent = 'Generate Prep Kit';
+};
+
+// ---- RESET ----
+window.resetForm = function() {
+  g('f-name').value = ''; g('f-down').value = ''; g('f-notes').value = '';
+  g('f-persona').value = 'Unknown'; g('f-lang').value = 'English'; g('f-source').value = 'Facebook';
+  ['tg-avail','tg-tour','tg-attend'].forEach(function(id) {
+    g(id).querySelectorAll('button').forEach(function(b, i) {
+      b.classList.remove('active','g','a','r');
+      if (i === 0) { b.classList.add('active'); if (id === 'tg-avail') b.classList.add('g'); }
+    });
+    TV[id] = id === 'tg-avail' ? 'Available' : id === 'tg-tour' ? 'In-Person' : 'Buyer only';
+  });
+  var pl = clr('prop-list'); propCount = 0;
+  window.addProperty();
+  lastResult = null; currentLang = 'en';
+  g('lang-bar').classList.remove('visible');
+  g('brief-output').classList.remove('visible');
+  g('empty-state').style.display = '';
+};
+
+// ---- INIT ----
+window.addProperty();
+
+})();
+</script>
+</body>
+</html>
